@@ -35,7 +35,7 @@ jobs:
       id: relay-metadata
       uses: docker/metadata-action@v4.3.0
       with:
-        images: ${{ env.registry }}/${{ github.repository }}-relay
+        images: ${{ env.registry }}/${{ github.repository }}/relay
       
     - name: "[Relay] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -50,7 +50,7 @@ jobs:
       id: processor-metadata
       uses: docker/metadata-action@v4.3.0
       with:
-        images: ${{ env.registry }}/${{ github.repository }}-processor
+        images: ${{ env.registry }}/${{ github.repository }}/processor
       
     - name: "[Processor] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
