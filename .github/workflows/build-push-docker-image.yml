@@ -34,7 +34,7 @@ jobs:
       uses: docker/build-push-action@v4.0.0
       with:
         context: relay
-        file: src/main/docker/Dockerfile.jvm
+        file: relay/src/main/docker/Dockerfile.jvm
         tags: ${{ steps.relay-metadata.outputs.tags }}
         labels: ${{ steps.relay-metadata.outputs.labels }}
       
@@ -48,7 +48,7 @@ jobs:
       uses: docker/build-push-action@v4.0.0
       with:
         context: processor
-        file: src/main/docker/Dockerfile.jvm
+        file: processor/src/main/docker/Dockerfile.jvm
         tags: ${{ steps.processor-metadata.outputs.tags }}
         labels: ${{ steps.processor-metadata.outputs.labels }}
 
