@@ -6,7 +6,7 @@ services:
     image: ghcr.io/gmrms/nipsr/relay:latest
     restart: always
     ports:
-      - "80:8080"
+      - "8080:8080"
     env_file:
       - env/db.env
       - env/relay.env
