@@ -1,0 +1,69 @@
+package com.nipsr.relay.filters.system
+
+import com.nipsr.payload.ObjectMapperUtils.toJsonByteArray
+import com.nipsr.payload.events.Event
+import com.nipsr.payload.nips.NIP_01
+import com.nipsr.relay.filters.EventFilter
+import com.nipsr.relay.filters.FilterType
+import com.nipsr.relay.validation.Hashing
+import com.nipsr.relay.validation.Schnorr
+import javax.enterprise.context.ApplicationScoped
+
+/**
+ * An event filter that validates the signature of an event.
+ */
+@NIP_01
+@ApplicationScoped
+class ValidatingSignatureEventFilter : EventFilter {
+
+    override fun filter(event: Event<*>) = event.isValid()
+
+    override fun type() = FilterType.GLOBAL
+
+    fun Event<*>.generateId() : String {
+        return Hashing.sha.digest(
+            serializeEvent(this)
+        ).toHex()
+    }
+
+    fun serializeEvent(event: Event<*>) : ByteArray {
+        return event.getFieldsToSerialize().toJsonByteArray()
+    }
+
+    fun Event<*>.getFieldsToSerialize() : List<Any?> {
+        return listOf(
+            0,
+            this.pubkey,
+            this.created_at,
+            this.kind,
+            this.tags,
+            this.content
+        )
+    }
+
+    fun ByteArray.toHex() : String {
+        return this.joinToString("") { "%02x".format(it) }
+    }
+
+    fun Event<*>.isValid() : Boolean {
+        return this.id == this.generateId() &&
+                Schnorr.verify(
+                    hexStringToByteArray(this.id),
+                    hexStringToByteArray(this.pubkey),
+                    hexStringToByteArray(this.sig)
+                )
+    }
+
+    private fun hexStringToByteArray(string: String): ByteArray {
+        val len = string.length
+        val data = ByteArray(len / 2)
+        var i = 0
+        while (i < len) {
+            data[i / 2] = ((Character.digit(string[i], 16) shl 4)
+                    + Character.digit(string[i + 1], 16)).toByte()
+            i += 2
+        }
+        return data
+    }
+
+}
