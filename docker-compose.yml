@@ -3,10 +3,10 @@ version: '3.1'
 services:
 
   relay:
-    image: com.nipsr/relay:latest-jvm
+    image: ghcr.io/gmrms/nipsr/relay:latest
     restart: always
     ports:
-      - "8080:8080"
+      - "80:8080"
     env_file:
       - env/db.env
       - env/relay.env
@@ -15,7 +15,7 @@ services:
       - rabbitmq
 
   processor:
-    image: com.nipsr/processor:latest-jvm
+    image: ghcr.io/gmrms/nipsr/processor:latest
     restart: always
     ports:
       - "8088:8088"
