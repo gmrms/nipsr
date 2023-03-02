@@ -8,7 +8,7 @@ jobs:
   build:
 
     env:
-      registry: "ghcr.io/gmrms/nipsr"
+      registry: "ghcr.io"
     
     runs-on: ubuntu-latest
 
@@ -24,16 +24,24 @@ jobs:
     - name: Build with Maven
       run: mvn -B package
       
+    - name: Log in to the Container registry
+      uses: docker/login-action@v1
+      with:
+        registry: ${{ env.registry }}
+        username: ${{ github.user }}
+        password: ${{ github.token }}
+      
     - name: "[Relay] - Extract metadata (tags, labels) for Docker"
       id: relay-metadata
       uses: docker/metadata-action@v4.3.0
       with:
-        images: ${{ env.registry }}/relay
+        images: ${{ env.registry }}/${{ github.repository }}/relay
       
     - name: "[Relay] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
       with:
         context: relay
+        push: true
         file: relay/src/main/docker/Dockerfile.jvm
         tags: ${{ steps.relay-metadata.outputs.tags }}
         labels: ${{ steps.relay-metadata.outputs.labels }}
@@ -42,12 +50,13 @@ jobs:
       id: processor-metadata
       uses: docker/metadata-action@v4.3.0
       with:
-        images: ${{ env.registry }}/processor
+        images: ${{ env.registry }}/${{ github.repository }}/processor
       
     - name: "[Processor] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
       with:
         context: processor
+        push: true
         file: processor/src/main/docker/Dockerfile.jvm
         tags: ${{ steps.processor-metadata.outputs.tags }}
         labels: ${{ steps.processor-metadata.outputs.labels }}
