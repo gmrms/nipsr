@@ -27,14 +27,13 @@ services:
   # Tools
 
   nginx:
-    image: ghcr.io/gmrms/nipsr/nginx:latest
+    image: nginx:1.23.3-alpine
     restart: always
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./nginx/ssl:/etc/nginx/ssl
 
   rabbitmq:
     image: rabbitmq:3.10-management
