@@ -37,4 +37,4 @@ nb-configuration.xml
 *.rej
 
 # Remote environment
-deploy/env/
+remote/env/

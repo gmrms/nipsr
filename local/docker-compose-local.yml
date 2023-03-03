@@ -6,44 +6,46 @@ services:
 
   relay:
     image: ghcr.io/gmrms/nipsr/relay:latest
-    restart: always
+    restart: unless-stopped
     env_file:
-      - local/env/db.env
-      - local/env/relay.env
-      - local/env/apps.rabbitmq.env
+      - env/db.env
+      - env/relay.env
+      - env/apps.rabbitmq.env
     depends_on:
       - rabbitmq
+      - mongo
 
   processor:
     image: ghcr.io/gmrms/nipsr/processor:latest
-    restart: always
+    restart: unless-stopped
     env_file:
-      - local/env/db.env
-      - local/env/processor.env
-      - local/env/apps.rabbitmq.env
+      - env/db.env
+      - env/processor.env
+      - env/apps.rabbitmq.env
     depends_on:
       - rabbitmq
+      - mongo
 
   # Other
 
   nginx:
     image: nginx:1.23.3-alpine
-    restart: always
+    restart: unless-stopped
     ports:
       - "80:80"
     volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
 
   rabbitmq:
     image: rabbitmq:3.10-management
-    restart: always
+    restart: unless-stopped
     ports:
       - "15672:15672"
     env_file:
-      - local/env/rabbitmq.env
+      - env/rabbitmq.env
 
   mongo:
     image: mongo
-    restart: always
+    restart: unless-stopped
     env_file:
-      - local/env/db.env
+      - env/db.env
