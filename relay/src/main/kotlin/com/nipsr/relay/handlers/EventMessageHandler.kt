@@ -85,7 +85,6 @@ class EventMessageHandler(
         }
 
         val kind = KnownKinds.fromCode(event[Event<*>::kind.name] as Int)
-            ?: throw RelayException("Event kind not supported")
 
         return event.mapTo(kind.type.java) as Event<*>
     }

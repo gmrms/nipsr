@@ -25,12 +25,14 @@ class RelayEventService : EventService() {
                 filter.project(recoverTags = true),
                 filter.group(),
                 filter.limit()
-            )
+            ).filterNotNull()
         ).asFlow()
 
     fun Filter.matchAllButTags(): Bson {
+
         val root = Document()
         val document = doc("\$match", root)
+
         if(!this.ids.isNullOrEmpty()) {
             val filters = arrayListOf<Document>()
             for(id in ids!!){
@@ -38,6 +40,7 @@ class RelayEventService : EventService() {
             }
             root.append("\$or", filters)
         }
+
         if(!this.authors.isNullOrEmpty()) {
             val filters = arrayListOf<Document>()
             for(author in authors!!){
@@ -45,10 +48,14 @@ class RelayEventService : EventService() {
             }
             root.append("\$or", filters)
         }
+
         if(!this.kinds.isNullOrEmpty()) root.append("kind", doc("\$in", kinds))
+
+        if(since == null && until == null) return document
         val since = this.since ?: 0
         val until = this.until ?: Long.MAX_VALUE
         root.append("created_at", doc("\$gte", since).append("\$lte", until))
+
         return document
     }
 
@@ -71,10 +78,10 @@ class RelayEventService : EventService() {
         return document
     }
 
-    fun Filter.unwind() = doc("\$unwind", doc("path", "\$tags"))
+    fun Filter.unwind() = doc("\$unwind", doc("path", "\$tags").append("preserveNullAndEmptyArrays", true))
 
-    fun Filter.matchTags(): Bson {
-        if(this.tags.isNullOrEmpty()) return doc("\$match", Document())
+    fun Filter.matchTags(): Bson? {
+        if(this.tags.isNullOrEmpty()) return null
         val root = arrayListOf<Document>()
         val document = doc("\$match", doc("\$or", root))
         if(!this.tags.isNullOrEmpty()){

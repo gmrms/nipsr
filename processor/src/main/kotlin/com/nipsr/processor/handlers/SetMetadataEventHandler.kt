@@ -7,7 +7,7 @@ import javax.enterprise.context.ApplicationScoped
 class SetMetadataEventHandler : EventHandler<SetMetadataEvent>() {
 
     override suspend fun handleEvent(event: SetMetadataEvent) {
-        println("Received set_metadata event")
+        eventService.deleteAllOfKindAndPubkey(event.kind, event.pubkey)
     }
 
     override fun handlesType() = SetMetadataEvent::class

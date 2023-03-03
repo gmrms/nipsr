@@ -49,7 +49,7 @@ With either of those you application should be accessible at `ws://localhost`.
 #### Running Nipsr without docker
 
 1. Install, configure and start Nginx (optional), RabbitMQ and MongoDB. (not covered here)
-2. Package the application `./mvnw package`.
+2. Package the application `./mvnw install`.
 3. You must configure the environment variables according to the files in `/local/env/`.
 4. In both `relay` and `processor` directories: run `./mvnw quarkus:dev` to start the relay application in development 
 mode or `java -jar target/quarkus-app/quarkus-run.jar` to run the app jar.

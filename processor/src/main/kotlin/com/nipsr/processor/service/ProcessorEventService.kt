@@ -1,5 +1,6 @@
 package com.nipsr.processor.service
 
+import com.mongodb.client.result.InsertOneResult
 import com.nipsr.payload.events.Event
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.service.EventService
@@ -10,13 +11,10 @@ import javax.enterprise.context.ApplicationScoped
 @ApplicationScoped
 class ProcessorEventService : EventService() {
 
-    suspend fun persist(event: Event<*>) =
+    suspend fun persist(event: Event<*>): InsertOneResult =
         collection.insertOne(event).awaitSuspending()
 
-    suspend fun replaceLastOfKindOfPubkeyBy(event: Event<*>) =
-        collection.findOneAndReplace(
-            doc("kind", event.kind).append("pubkey", event.pubkey),
-            event
-        ).awaitSuspending()
+    suspend fun deleteAllOfKindAndPubkey(kind: Int, pubkey: String): Long =
+        collection.deleteMany(doc("kind", kind).append("pubkey", pubkey)).awaitSuspending().deletedCount
 
 }
