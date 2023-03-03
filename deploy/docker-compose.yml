@@ -2,11 +2,22 @@ version: '3.1'
 
 services:
 
+  nginx:
+    image: ghcr.io/gmrms/nipsr/nginx:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - relay
+      - processor
+
   relay:
     image: ghcr.io/gmrms/nipsr/relay:latest
     restart: always
-    ports:
-      - "8080:8080"
     env_file:
       - env/db.env
       - env/relay.env
@@ -17,8 +28,6 @@ services:
   processor:
     image: ghcr.io/gmrms/nipsr/processor:latest
     restart: always
-    ports:
-      - "8088:8088"
     env_file:
       - env/db.env
       - env/processor.env
@@ -30,7 +39,6 @@ services:
     image: rabbitmq:3.10-management
     restart: always
     ports:
-      - "5672:5672"
       - "15672:15672"
     env_file:
       - env/rabbitmq.env

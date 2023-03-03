@@ -1,0 +1,49 @@
+version: '3.1'
+
+services:
+
+  # Nipsr
+
+  relay:
+    image: ghcr.io/gmrms/nipsr/relay:latest
+    restart: always
+    env_file:
+      - local/env/db.env
+      - local/env/relay.env
+      - local/env/apps.rabbitmq.env
+    depends_on:
+      - rabbitmq
+
+  processor:
+    image: ghcr.io/gmrms/nipsr/processor:latest
+    restart: always
+    env_file:
+      - local/env/db.env
+      - local/env/processor.env
+      - local/env/apps.rabbitmq.env
+    depends_on:
+      - rabbitmq
+
+  # Other
+
+  nginx:
+    image: nginx:1.23.3-alpine
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/conf.d:/etc/nginx/conf.d
+
+  rabbitmq:
+    image: rabbitmq:3.10-management
+    restart: always
+    ports:
+      - "15672:15672"
+    env_file:
+      - local/env/rabbitmq.env
+
+  mongo:
+    image: mongo
+    restart: always
+    env_file:
+      - local/env/db.env
