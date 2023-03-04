@@ -4,9 +4,6 @@ import com.nipsr.payload.events.Event
 import com.nipsr.payload.events.KnownKinds
 import com.nipsr.processor.service.ProcessorEventService
 import javax.inject.Inject
-import javax.transaction.Transactional
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import kotlin.reflect.KClass
 
@@ -20,7 +17,7 @@ abstract class EventHandler<T : Event<*>> {
     abstract suspend fun handleEvent(event: T)
     abstract fun handlesType(): KClass<T>
 
-    fun handle(event: T) = runBlocking(Dispatchers.IO) {
+    suspend fun handle(event: T) {
         logger.trace("Received event of type '${KnownKinds.fromCode(event.kind).description}' with id '${event.id}'")
         try {
             logger.debug("Handling event '${event.id}'")
@@ -32,7 +29,7 @@ abstract class EventHandler<T : Event<*>> {
         }
     }
 
-    suspend fun persist(event: T) {
+    open suspend fun persist(event: T) {
         logger.debug("Persisting event '${event.id}'")
         eventService.persist(event)
         logger.debug("Persisted event '${event.id}'")

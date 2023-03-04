@@ -1,12 +1,10 @@
 package com.nipsr.processor.listener
 
-import com.nipsr.processor.handlers.EventHandler
 import com.nipsr.payload.events.Event
+import com.nipsr.processor.handlers.EventHandler
 import io.vertx.core.json.JsonObject
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Instance
-import javax.transaction.Transactional
-import kotlinx.coroutines.runBlocking
 import org.eclipse.microprofile.metrics.MetricUnits
 import org.eclipse.microprofile.metrics.annotation.Counted
 import org.eclipse.microprofile.metrics.annotation.Timed
@@ -23,8 +21,7 @@ class EventMessageListener(
     @Incoming("events")
     @Counted(name = "totalEvents", unit = MetricUnits.HOURS)
     @Timed(name = "eventProcessingDuration", unit = MetricUnits.MILLISECONDS)
-    @Transactional
-    fun consume(eventJson: JsonObject) {
+    suspend fun consume(eventJson: JsonObject) {
         val event = eventJson.mapTo(Event::class.java)
         logger.trace("Received event '${event.id}'")
         for(handler in eventHandlers){
