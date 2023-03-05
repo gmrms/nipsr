@@ -6,6 +6,12 @@ data class Tag(
     val options: List<String>
 ) {
 
+    fun toList() = if(value.isNotBlank()){
+        listOf(tag, value) + options
+    } else {
+        listOf(tag) + options
+    }
+
     companion object {
         fun fromList(values: List<String>) = Tag(values[0], values.hasIndexOrEmpty(1), values.hasOptionsOrEmpty(2))
         private fun List<String>.hasIndexOrEmpty(index: Int) = if (this.size > index) this[index] else ""

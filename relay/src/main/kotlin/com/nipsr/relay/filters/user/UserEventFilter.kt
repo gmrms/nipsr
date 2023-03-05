@@ -27,7 +27,7 @@ class UserEventFilter(
         if(!filter.ids.any { event.id.startsWith(it) }) return false
         if(!filter.authors.any { event.pubkey.startsWith(it) }) return false
         if(filter.kinds?.contains(event.kind) == false) return false
-        //if(!filter.tags.any { tag -> event.tags.any { it.count { tag.contains(it) } >= 2 } }) return false
+        if(!filter.tags.any { tag -> event.tags.any { it.toList().count { tag.contains(it) } >= 2 } }) return false
         if(filter.since != null && event.created_at < filter.since!!) return false
         if(filter.until != null && event.created_at > filter.until!!) return false
         return true
