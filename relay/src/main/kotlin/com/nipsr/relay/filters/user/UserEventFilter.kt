@@ -3,6 +3,7 @@ package com.nipsr.relay.filters.user
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_12
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.FilterType
 
@@ -23,6 +24,7 @@ class UserEventFilter(
         return false
     }
 
+    @NIP_12
     private fun applyFilter(filter: Filter, event: Event<*>): Boolean {
         if(!filter.ids.any { event.id.startsWith(it) }) return false
         if(!filter.authors.any { event.pubkey.startsWith(it) }) return false

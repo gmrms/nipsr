@@ -2,6 +2,7 @@ package com.nipsr.relay.service
 
 import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_12
 import com.nipsr.payload.service.EventService
 import io.quarkus.mongodb.FindOptions
 import io.smallrye.mutiny.coroutines.asFlow
@@ -19,6 +20,7 @@ class RelayEventService : EventService() {
     suspend fun findByFilters(filter: Filter) =
         collection.find(filter.toBSON(), FindOptions().limit(filter.limit())).asFlow()
 
+    @NIP_12
     fun Filter.toBSON(): Bson {
 
         val root = Document()

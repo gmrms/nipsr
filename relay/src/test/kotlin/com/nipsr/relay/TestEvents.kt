@@ -2,11 +2,14 @@ package com.nipsr.relay
 
 import com.nipsr.payload.ObjectMapperUtils.mapTo
 import com.nipsr.payload.ObjectMapperUtils.objectMapper
-import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.factory.toEvent
+import com.nipsr.payload.model.inputs.EventInput
 
 object TestEvents {
 
-    val invalidEventString = """
+    private val eventClass = EventInput::class.java
+
+    private val invalidEventString = """
         {
       "kind": 1,
       "content": "invalid",
@@ -20,7 +23,7 @@ object TestEvents {
     }
     """.trimIndent()
 
-    val invalidEvent = objectMapper.readValue(invalidEventString, Event::class.java)
+    val invalidEvent = objectMapper.readValue(invalidEventString, eventClass).toEvent()
 
     val validEvents = arrayListOf(
         """
@@ -75,7 +78,7 @@ object TestEvents {
             }
         """.trimIndent()
     ).map {
-        it.mapTo(Event::class.java)
+        it.mapTo(eventClass).toEvent()
     }
 
 }

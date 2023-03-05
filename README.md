@@ -5,6 +5,7 @@ This is a distributed Nostr relay implementation using Quarkus and Kotlin.
 ## NIPs
 
 - [X] NIP-01 - Basic protocol flow description
+- [X] NIP-12 - Generic Tag Queries
 
 ## Architecture
 
