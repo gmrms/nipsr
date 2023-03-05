@@ -2,8 +2,9 @@ package com.nipsr.relay.handlers
 
 import com.nipsr.payload.Constants.EVENT
 import com.nipsr.payload.ObjectMapperUtils.mapTo
-import com.nipsr.payload.events.Event
-import com.nipsr.payload.events.KnownKinds
+import com.nipsr.payload.factory.toEvent
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.model.inputs.EventInput
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.filters.EventFilter
@@ -84,10 +85,7 @@ class EventMessageHandler(
             throw RelayException("Invalid event format")
         }
 
-        val kind = KnownKinds.fromCode(event[Event<*>::kind.name] as Int)
-            ?: throw RelayException("Event kind not supported")
-
-        return event.mapTo(kind.type.java) as Event<*>
+        return event.mapTo(EventInput::class.java).toEvent()
     }
 
     override fun handlesType() = MessageType.EVENT

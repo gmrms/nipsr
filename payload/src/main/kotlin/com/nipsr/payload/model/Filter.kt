@@ -1,4 +1,4 @@
-package com.nipsr.payload.filters
+package com.nipsr.payload.model
 
 import com.nipsr.payload.nips.NIP_01
 

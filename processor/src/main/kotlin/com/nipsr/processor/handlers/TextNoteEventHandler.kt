@@ -1,6 +1,6 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.TextNoteEvent
+import com.nipsr.payload.model.events.TextNoteEvent
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped

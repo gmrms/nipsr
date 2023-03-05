@@ -1,6 +1,6 @@
 package com.nipsr.payload.service
 
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import io.quarkus.mongodb.reactive.ReactiveMongoClient
 import io.quarkus.mongodb.reactive.ReactiveMongoCollection
 import javax.annotation.PostConstruct

@@ -1,6 +1,6 @@
 package com.nipsr.relay.filters
 
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 
 /**
  * An event filter is used to filter events that are sent by and to a client.

@@ -1,6 +1,6 @@
 package com.nipsr.payload.codec
 
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_01
 import org.bson.codecs.Codec
 import org.bson.codecs.configuration.CodecProvider

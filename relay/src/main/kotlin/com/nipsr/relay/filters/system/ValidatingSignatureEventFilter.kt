@@ -1,7 +1,7 @@
 package com.nipsr.relay.filters.system
 
 import com.nipsr.payload.ObjectMapperUtils.toJsonByteArray
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.FilterType

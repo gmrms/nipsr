@@ -1,6 +1,6 @@
 package com.nipsr.relay.filters.user
 
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.FilterType
 

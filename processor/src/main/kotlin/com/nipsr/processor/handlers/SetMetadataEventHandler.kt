@@ -1,13 +1,13 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.SetMetadataEvent
+import com.nipsr.payload.model.events.SetMetadataEvent
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped
 class SetMetadataEventHandler : EventHandler<SetMetadataEvent>() {
 
     override suspend fun handleEvent(event: SetMetadataEvent) {
-        println("Received set_metadata event")
+        eventService.deleteAllOfKindAndPubkey(event.kind, event.pubkey)
     }
 
     override fun handlesType() = SetMetadataEvent::class
