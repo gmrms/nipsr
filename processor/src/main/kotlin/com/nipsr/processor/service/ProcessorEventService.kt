@@ -1,7 +1,7 @@
 package com.nipsr.processor.service
 
 import com.mongodb.client.result.InsertOneResult
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.service.EventService
 import io.smallrye.mutiny.coroutines.awaitSuspending

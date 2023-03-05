@@ -2,8 +2,8 @@ package com.nipsr.payload.codec
 
 import com.mongodb.MongoClientSettings
 import com.nipsr.payload.ObjectMapperUtils.mapTo
-import com.nipsr.payload.events.Event
-import com.nipsr.payload.events.KnownKinds
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.model.KnownKinds
 import com.nipsr.payload.nips.NIP_01
 import org.bson.BsonReader
 import org.bson.BsonString

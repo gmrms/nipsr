@@ -1,7 +1,11 @@
-package com.nipsr.payload.events
+package com.nipsr.payload.model
 
 import com.nipsr.payload.Constants
 import com.nipsr.payload.content.SetMetadata
+import com.nipsr.payload.model.events.RecommendServerEvent
+import com.nipsr.payload.model.events.SetMetadataEvent
+import com.nipsr.payload.model.events.TextNoteEvent
+import com.nipsr.payload.model.events.UnknownEvent
 import com.nipsr.payload.nips.NIP_01
 import kotlin.reflect.KClass
 

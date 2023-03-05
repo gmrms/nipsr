@@ -1,7 +1,7 @@
 package com.nipsr.relay.filters.user
 
-import com.nipsr.payload.events.Event
-import com.nipsr.payload.filters.Filter
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.FilterType
@@ -27,7 +27,7 @@ class UserEventFilter(
         if(!filter.ids.any { event.id.startsWith(it) }) return false
         if(!filter.authors.any { event.pubkey.startsWith(it) }) return false
         if(filter.kinds?.contains(event.kind) == false) return false
-        if(!filter.tags.any { tag -> event.tags.any { it.count { tag.contains(it) } >= 2 } }) return false
+        //if(!filter.tags.any { tag -> event.tags.any { it.count { tag.contains(it) } >= 2 } }) return false
         if(filter.since != null && event.created_at < filter.since!!) return false
         if(filter.until != null && event.created_at > filter.until!!) return false
         return true

@@ -1,6 +1,6 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.RecommendServerEvent
+import com.nipsr.payload.model.events.RecommendServerEvent
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped

@@ -1,6 +1,6 @@
 package com.nipsr.processor.listener
 
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 import com.nipsr.processor.handlers.EventHandler
 import io.vertx.core.json.JsonObject
 import javax.enterprise.context.ApplicationScoped

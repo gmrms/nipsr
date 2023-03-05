@@ -1,6 +1,6 @@
 package com.nipsr.relay.service
 
-import com.nipsr.payload.filters.Filter
+import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.service.EventService
 import io.smallrye.mutiny.coroutines.asFlow

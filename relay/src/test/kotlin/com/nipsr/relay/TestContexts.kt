@@ -1,6 +1,6 @@
 package com.nipsr.relay
 
-import com.nipsr.payload.filters.Filter
+import com.nipsr.payload.model.Filter
 import com.nipsr.relay.model.SessionInfo
 import com.nipsr.relay.model.SessionsContext
 import com.nipsr.relay.model.Subscription

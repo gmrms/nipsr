@@ -2,7 +2,7 @@ package com.nipsr.relay
 
 import com.nipsr.payload.ObjectMapperUtils.mapTo
 import com.nipsr.payload.ObjectMapperUtils.objectMapper
-import com.nipsr.payload.events.Event
+import com.nipsr.payload.model.events.Event
 
 object TestEvents {
 

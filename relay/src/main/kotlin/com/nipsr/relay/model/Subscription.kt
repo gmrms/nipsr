@@ -1,6 +1,6 @@
 package com.nipsr.relay.model
 
-import com.nipsr.payload.filters.Filter
+import com.nipsr.payload.model.Filter
 
 data class Subscription(
     val id: String,

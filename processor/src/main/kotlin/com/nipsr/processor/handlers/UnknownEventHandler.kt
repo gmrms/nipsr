@@ -1,7 +1,6 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.RecommendServerEvent
-import com.nipsr.payload.events.UnknownEvent
+import com.nipsr.payload.model.events.UnknownEvent
 import javax.enterprise.context.ApplicationScoped
 import org.slf4j.LoggerFactory
 

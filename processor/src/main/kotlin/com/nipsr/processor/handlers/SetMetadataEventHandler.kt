@@ -1,6 +1,6 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.SetMetadataEvent
+import com.nipsr.payload.model.events.SetMetadataEvent
 import javax.enterprise.context.ApplicationScoped
 
 @ApplicationScoped

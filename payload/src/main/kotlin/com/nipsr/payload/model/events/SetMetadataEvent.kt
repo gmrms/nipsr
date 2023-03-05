@@ -1,4 +1,4 @@
-package com.nipsr.payload.events
+package com.nipsr.payload.model.events
 
 import com.nipsr.payload.content.SetMetadata
 import com.nipsr.payload.nips.NIP_01

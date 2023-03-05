@@ -3,8 +3,8 @@ package com.nipsr.relay.handlers
 import com.nipsr.payload.Constants.FILTERS
 import com.nipsr.payload.Constants.SUBSCRIPTION_ID
 import com.nipsr.payload.ObjectMapperUtils.mapTo
-import com.nipsr.payload.events.Event
-import com.nipsr.payload.filters.Filter
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.handlers.spec.MessageHandler

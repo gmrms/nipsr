@@ -1,7 +1,7 @@
 package com.nipsr.processor.handlers
 
-import com.nipsr.payload.events.Event
-import com.nipsr.payload.events.KnownKinds
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.model.KnownKinds
 import com.nipsr.processor.service.ProcessorEventService
 import javax.inject.Inject
 import org.slf4j.LoggerFactory
