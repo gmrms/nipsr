@@ -9,6 +9,8 @@ This is a distributed Nostr relay implementation using Quarkus and Kotlin.
 - [X] NIP-09 - Event Deletion
 - [X] NIP-11 - Relay Information Document
 - [X] NIP-12 - Generic Tag Queries
+- [X] NIP-15 - End of Stored Events Notice
+- [X] NIP-16 - Event Treatment
 
 ## Architecture
 
