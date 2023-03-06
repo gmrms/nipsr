@@ -23,16 +23,30 @@ abstract class EventHandler<T : Event<*>> {
             logger.debug("Handling event '${event.id}'")
             handleEvent(event)
             logger.debug("Event handled '${event.id}'")
-            persist(event)
+            handlePersistence(event)
         } catch (e: Exception) {
             logger.error("Error on processing event of type '${KnownKinds.fromCode(event.kind).description}' with id '${event.id}'", e)
         }
     }
 
-    open suspend fun persist(event: T) {
+    open suspend fun handlePersistence(event: T) {
+        if(event.isRegular()){
+            persist(event)
+        } else if(event.isReplaceable()) {
+            replaceOldest(event)
+        }
+    }
+
+    suspend fun persist(event: T) {
         logger.debug("Persisting event '${event.id}'")
         eventService.persist(event)
         logger.debug("Persisted event '${event.id}'")
+    }
+
+    suspend fun replaceOldest(event: T){
+        logger.debug("Replacing older events '${event.id}'")
+        eventService.deleteOldersOfKindAndPubkey(event.created_at, event.kind, event.pubkey)
+        logger.debug("Replaced older events '${event.id}'")
     }
 
 }

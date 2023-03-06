@@ -2,10 +2,14 @@ package com.nipsr.payload.model.events
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import com.nipsr.payload.Constants.EPHEMERAL_EVENTS_RANGE
+import com.nipsr.payload.Constants.REGULAR_EVENTS_RANGE
+import com.nipsr.payload.Constants.REPLACEABLE_EVENTS_RANGE
 import com.nipsr.payload.ObjectMapperUtils.objectMapper
 import com.nipsr.payload.model.KnownKinds
 import com.nipsr.payload.model.inputs.EventInput
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_16
 import org.bson.codecs.pojo.annotations.BsonId
 import kotlin.properties.Delegates
 
@@ -29,6 +33,15 @@ sealed class Event<T> {
     var tags: ArrayList<Tag> = arrayListOf()
     var content: String = ""
     lateinit var sig: String
+
+    @NIP_16
+    open fun isRegular() = kind in REGULAR_EVENTS_RANGE
+
+    @NIP_16
+    open fun isReplaceable() = kind in REPLACEABLE_EVENTS_RANGE
+
+    @NIP_16
+    open fun isEphemeral() = kind in EPHEMERAL_EVENTS_RANGE
 
     fun readContent() : T = objectMapper.readValue(content, KnownKinds.fromCode(kind).contentType.java) as T
 

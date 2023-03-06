@@ -17,7 +17,11 @@ class ProcessorEventService : EventService() {
     suspend fun deleteByIdsAndPubkey(ids: List<String>, pubkey: String): Long =
         collection.deleteMany(doc("_id", doc("\$in", ids)).append("pubkey", pubkey)).awaitSuspending().deletedCount
 
-    suspend fun deleteAllOfKindAndPubkey(kind: Int, pubkey: String): Long =
-        collection.deleteMany(doc("kind", kind).append("pubkey", pubkey)).awaitSuspending().deletedCount
+    suspend fun deleteOldersOfKindAndPubkey(createdAt: Long, kind: Int, pubkey: String): Long =
+        collection.deleteMany(
+            doc("kind", kind)
+                .append("pubkey", pubkey)
+                .append("created_at", doc("\$lt", createdAt))
+        ).awaitSuspending().deletedCount
 
 }

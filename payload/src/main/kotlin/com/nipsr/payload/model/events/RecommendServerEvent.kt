@@ -3,4 +3,6 @@ package com.nipsr.payload.model.events
 import com.nipsr.payload.nips.NIP_01
 
 @NIP_01
-class RecommendServerEvent : Event<String>()
+class RecommendServerEvent : Event<String>(){
+    override fun isRegular() = true
+}

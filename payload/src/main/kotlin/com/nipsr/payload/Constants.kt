@@ -17,4 +17,9 @@ object Constants {
     // Tags
     const val EVENT_TAG = "e"
     const val PUBKEY_TAG = "p"
+
+    // Events Types
+    val REGULAR_EVENTS_RANGE = 1000 until 10000
+    val REPLACEABLE_EVENTS_RANGE = 10000 until 20000
+    val EPHEMERAL_EVENTS_RANGE = 20000 until 30000
 }
