@@ -5,6 +5,8 @@ import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_12
 import com.nipsr.relay.filters.EventFilter
+import com.nipsr.relay.filters.EventFilter.Companion.invalid
+import com.nipsr.relay.filters.EventFilter.Companion.ok
 import com.nipsr.relay.filters.FilterType
 
 /**
@@ -17,11 +19,11 @@ class UserEventFilter(
 
     constructor(filter: Filter) : this(listOf(filter))
 
-    override fun filter(event: Event<*>): Boolean {
+    override fun filter(event: Event<*>): Pair<Boolean, String?> {
         for(filter in filters) {
-            if(applyFilter(filter, event)) return true
+            if(applyFilter(filter, event)) return ok()
         }
-        return false
+        return false to null
     }
 
     @NIP_12

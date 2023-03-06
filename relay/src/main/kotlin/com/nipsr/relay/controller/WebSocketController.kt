@@ -2,10 +2,14 @@ package com.nipsr.relay.controller
 
 import com.nipsr.payload.ObjectMapperUtils.objectMapper
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_20
+import com.nipsr.relay.exeptions.EventErrorException
+import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.handlers.spec.MessageHandler
 import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.asNotice
 import com.nipsr.relay.message.SessionMessageExtension.send
+import com.nipsr.relay.message.SessionMessageExtension.sendResult
 import com.nipsr.relay.model.SessionInfo
 import com.nipsr.relay.model.SessionsContext
 import java.util.concurrent.ConcurrentHashMap
@@ -46,9 +50,13 @@ class WebSocketController(
     }
 
     @OnError
+    @NIP_20
     fun onError(session: Session, throwable: Throwable) {
-        throwable.printStackTrace()
-        session.send(throwable.asNotice())
+        if(throwable is EventErrorException){
+            session.sendResult(throwable)
+        } else {
+            session.send(throwable.asNotice())
+        }
     }
 
     @OnMessage

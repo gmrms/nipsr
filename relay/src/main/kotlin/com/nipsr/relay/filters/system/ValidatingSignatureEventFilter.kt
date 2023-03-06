@@ -4,6 +4,8 @@ import com.nipsr.payload.ObjectMapperUtils.toJsonByteArray
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.filters.EventFilter
+import com.nipsr.relay.filters.EventFilter.Companion.invalid
+import com.nipsr.relay.filters.EventFilter.Companion.ok
 import com.nipsr.relay.filters.FilterType
 import com.nipsr.relay.validation.Hashing
 import com.nipsr.relay.validation.Schnorr
@@ -16,7 +18,11 @@ import javax.enterprise.context.ApplicationScoped
 @ApplicationScoped
 class ValidatingSignatureEventFilter : EventFilter {
 
-    override fun filter(event: Event<*>) = event.isValid()
+    override fun filter(event: Event<*>) = if(event.isValid()){
+        ok()
+    } else {
+        false invalid "Invalid signature"
+    }
 
     override fun type() = FilterType.GLOBAL
 

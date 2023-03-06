@@ -16,14 +16,14 @@ class ValidatingSignatureEventFilterTest {
     @Test
     fun `should allow events with valid signatures`(){
         val toTest = TestEvents.validEvents.first()
-        val result = validatingSignatureEventFilter.filter(toTest)
+        val (result, _) = validatingSignatureEventFilter.filter(toTest)
         assertTrue(result)
     }
 
     @Test
     fun `should not allow events with invalid signatures`(){
         val toTest = TestEvents.invalidEvent
-        val result = validatingSignatureEventFilter.filter(toTest)
+        val (result, _) = validatingSignatureEventFilter.filter(toTest)
         assertFalse(result)
     }
 

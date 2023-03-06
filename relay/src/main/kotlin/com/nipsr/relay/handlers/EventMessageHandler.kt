@@ -6,6 +6,8 @@ import com.nipsr.payload.factory.toEvent
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.inputs.EventInput
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_20
+import com.nipsr.relay.exeptions.EventErrorException
 import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.FilterType
@@ -17,6 +19,7 @@ import com.nipsr.relay.handlers.spec.MessageSpec
 import com.nipsr.relay.message.Message
 import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.send
+import com.nipsr.relay.message.SessionMessageExtension.sendResult
 import com.nipsr.relay.model.SessionsContext
 import com.nipsr.relay.model.Subscription
 import com.nipsr.relay.validation.EventValidator
@@ -47,12 +50,21 @@ class EventMessageHandler(
     @Counted(name = "EVENT-TotalMessages", unit = MetricUnits.HOURS)
     @Timed(name = "EVENT-MessageProcessingDuration", unit = MetricUnits.MILLISECONDS)
     override suspend fun handleMessage(sessionsContext: SessionsContext, messageParts: MessageParts) {
-
         val event = messageParts.getAndConvert(spec(EVENT), ::convertEvent)
         applyGlobalFilters(event)
         validate(event)
-        eventEmitter.send(event)
+        sendEvent(event)
+        @NIP_20
+        sessionsContext.currentSession.sendResult(event)
         broadcast(sessionsContext, event)
+    }
+
+    private fun sendEvent(event: Event<*>) {
+        try {
+            eventEmitter.send(event)
+        } catch (e: Exception) {
+            throw EventErrorException(event, "error: error sending event to the event bus.")
+        }
     }
 
     private fun validate(event: Event<*>) {
@@ -62,18 +74,18 @@ class EventMessageHandler(
 
         for(validator in validators){
             if(!validator.validate(event)){
-                throw RelayException("Event denied: invalid content")
+                throw EventErrorException(event, "invalid: this event does not match the required format for its kind.")
             }
         }
     }
 
     private fun applyGlobalFilters(event: Event<*>) {
         val globalFilters = filtersGroupedByType[FilterType.GLOBAL] ?: arrayListOf()
-
         for(globalFilter in globalFilters){
             continue
-            if(!globalFilter.filter(event)){
-                throw RelayException("Event denied: invalid signature")
+            val (result, message) = globalFilter.filter(event)
+            if(!result){
+                throw EventErrorException(event, message)
             }
         }
     }
@@ -85,7 +97,8 @@ class EventMessageHandler(
             }
             for(subscription in info.subscriptions){
                 val userFilter = getFilter(subscription)
-                if(userFilter.filter(event)){
+                val (result, _) = userFilter.filter(event)
+                if(result){
                     val message = Message(MessageType.EVENT, subscription.id, event)
                     session.send(message)
                 }
