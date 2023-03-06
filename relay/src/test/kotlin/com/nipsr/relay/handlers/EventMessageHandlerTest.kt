@@ -15,6 +15,7 @@ import kotlinx.coroutines.test.runTest
 import org.eclipse.microprofile.reactive.messaging.Emitter
 import org.junit.Test
 
+@NIP_01
 class EventMessageHandlerTest {
 
     val eventEmmiter = mockk<Emitter<Event<*>>>(relaxed = true)
@@ -24,7 +25,6 @@ class EventMessageHandlerTest {
     val reqMessageHandler = EventMessageHandler(eventEmmiter, eventValidators, eventFilters)
 
     @Test
-    @NIP_01
     fun `should handle EVENT message`() = runTest {
         reqMessageHandler.handleMessage(defaultSessionsContext, MessageParts(
             "EVENT",

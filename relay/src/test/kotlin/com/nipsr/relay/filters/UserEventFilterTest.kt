@@ -6,12 +6,12 @@ import com.nipsr.relay.TestEvents
 import com.nipsr.relay.filters.user.UserEventFilter
 import org.junit.jupiter.api.Test
 
+@NIP_01
 class UserEventFilterTest {
 
     val events = TestEvents.validEvents
 
     @Test
-    @NIP_01
     fun `should allow filters of pubkey and id by prefix`() {
         val ids = events.map { it.id.substring(0, 24) }
         val authors = events.map { it.pubkey.substring(0, 24) }
@@ -25,7 +25,6 @@ class UserEventFilterTest {
     }
 
     @Test
-    @NIP_01
     fun `should not allow filters of pubkey and id by prefixes that do not exist`() {
         val ids = events.map { it.id.substring(24) }
         val authors = events.map { it.pubkey.substring(24) }
@@ -39,7 +38,6 @@ class UserEventFilterTest {
     }
 
     @Test
-    @NIP_01
     fun `should filter events by kinds`() {
         val kinds = arrayListOf(1, 2, 3)
         for(kind in kinds) {
@@ -57,7 +55,6 @@ class UserEventFilterTest {
     }
 
     @Test
-    @NIP_01
     fun `should filter events by tags`(){
         val filter = Filter(
             tags = arrayListOf(
@@ -75,7 +72,6 @@ class UserEventFilterTest {
     }
 
     @Test
-    @NIP_01
     fun `should filter events with multiple filters`(){
         val filters = arrayListOf(
             Filter(

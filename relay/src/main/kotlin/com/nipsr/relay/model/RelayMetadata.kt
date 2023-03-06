@@ -8,7 +8,7 @@ data class RelayMetadata(
     val description: String,
     val pubkey: String,
     val contact: String,
-    val supported_nips: List<String>,
+    val supported_nips: List<Int>,
     val software: String,
     val version: String
 )

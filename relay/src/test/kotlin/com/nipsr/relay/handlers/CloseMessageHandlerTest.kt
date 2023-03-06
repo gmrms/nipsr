@@ -7,12 +7,12 @@ import java.util.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+@NIP_01
 class CloseMessageHandlerTest {
 
     val reqMessageHandler = CloseMessageHandler()
 
     @Test
-    @NIP_01
     fun `should handle CLOSE message`() = runTest {
         reqMessageHandler.handleMessage(defaultSessionsContext, MessageParts(
             "CLOSE",
@@ -21,7 +21,6 @@ class CloseMessageHandlerTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    @NIP_01
     fun `should deny too large subscription Ids`() = runTest {
         val tooLarge = "a".repeat(1000)
         reqMessageHandler.handleMessage(defaultSessionsContext, MessageParts(
