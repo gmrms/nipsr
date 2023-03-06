@@ -20,7 +20,7 @@ class UserEventFilterTest {
             authors = authors.toList(),
         )
         for(event in events) {
-            assert(UserEventFilter(filter).filter(event))
+            assert(UserEventFilter(filter).filter(event).first)
         }
     }
 
@@ -33,7 +33,7 @@ class UserEventFilterTest {
             authors = authors.toList(),
         )
         for(event in events) {
-            assert(!UserEventFilter(filter).filter(event))
+            assert(!UserEventFilter(filter).filter(event).first)
         }
     }
 
@@ -46,9 +46,9 @@ class UserEventFilterTest {
             )
             for(event in events) {
                 if(event.kind == kind) {
-                    assert(UserEventFilter(filter).filter(event))
+                    assert(UserEventFilter(filter).filter(event).first)
                 } else {
-                    assert(!UserEventFilter(filter).filter(event))
+                    assert(!UserEventFilter(filter).filter(event).first)
                 }
             }
         }
@@ -64,7 +64,7 @@ class UserEventFilterTest {
         )
         var count = 0
         for(event in events) {
-            if(UserEventFilter(filter).filter(event)) {
+            if(UserEventFilter(filter).filter(event).first) {
                 count++
             }
         }
@@ -84,7 +84,7 @@ class UserEventFilterTest {
         )
         var count = 0
         for(event in events) {
-            if(UserEventFilter(filters).filter(event)) {
+            if(UserEventFilter(filters).filter(event).first) {
                 count++
             }
         }
