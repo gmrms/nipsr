@@ -7,6 +7,7 @@ import com.nipsr.relay.TestContexts.defaultSessionsContext
 import com.nipsr.relay.TestEvents
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.handlers.spec.MessageParts
+import com.nipsr.relay.validation.EventValidator
 import io.mockk.coVerify
 import io.mockk.mockk
 import javax.enterprise.inject.Instance
@@ -18,8 +19,9 @@ class EventMessageHandlerTest {
 
     val eventEmmiter = mockk<Emitter<Event<*>>>(relaxed = true)
     val eventFilters = mockk<Instance<EventFilter>>(relaxed = true)
+    val eventValidators = mockk<Instance<EventValidator>>(relaxed = true)
 
-    val reqMessageHandler = EventMessageHandler(eventEmmiter, eventFilters)
+    val reqMessageHandler = EventMessageHandler(eventEmmiter, eventValidators, eventFilters)
 
     @Test
     @NIP_01

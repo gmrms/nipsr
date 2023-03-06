@@ -19,6 +19,7 @@ import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.send
 import com.nipsr.relay.model.SessionsContext
 import com.nipsr.relay.model.Subscription
+import com.nipsr.relay.validation.EventValidator
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Instance
 import org.eclipse.microprofile.metrics.MetricUnits
@@ -37,6 +38,7 @@ import org.eclipse.microprofile.reactive.messaging.Emitter
 class EventMessageHandler(
     @Channel("events")
     private val eventEmitter: Emitter<Event<*>>,
+    private val eventValidators: Instance<EventValidator>,
     eventFilters: Instance<EventFilter>,
 ) : MessageHandler {
 
@@ -47,18 +49,35 @@ class EventMessageHandler(
     override suspend fun handleMessage(sessionsContext: SessionsContext, messageParts: MessageParts) {
 
         val event = messageParts.getAndConvert(spec(EVENT), ::convertEvent)
+        applyGlobalFilters(event)
+        validate(event)
+        eventEmitter.send(event)
+        broadcast(sessionsContext, event)
+    }
 
+    private fun validate(event: Event<*>) {
+        val validators = eventValidators.stream()
+            .filter { it.kindsToValidate().contains(event.kind) }
+            .toList()
+
+        for(validator in validators){
+            if(!validator.validate(event)){
+                throw RelayException("Event denied: invalid content")
+            }
+        }
+    }
+
+    private fun applyGlobalFilters(event: Event<*>) {
         val globalFilters = filtersGroupedByType[FilterType.GLOBAL] ?: arrayListOf()
 
         for(globalFilter in globalFilters){
-            continue
             if(!globalFilter.filter(event)){
                 throw RelayException("Event denied: invalid signature")
             }
         }
+    }
 
-        eventEmitter.send(event)
-
+    private fun broadcast(sessionsContext: SessionsContext, event: Event<*>) {
         for((session, info) in sessionsContext.sessions){
             if(info.subscriptions.isEmpty()){
                 continue
