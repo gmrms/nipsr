@@ -3,9 +3,9 @@ package com.nipsr.relay.handlers
 import com.nipsr.payload.Constants.FILTERS
 import com.nipsr.payload.Constants.SUBSCRIPTION_ID
 import com.nipsr.payload.ObjectMapperUtils.mapTo
-import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
+import com.nipsr.payload.nips.NIP_15
 import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.handlers.spec.MessageHandler
 import com.nipsr.relay.handlers.spec.MessageParts
@@ -20,7 +20,7 @@ import javax.enterprise.context.ApplicationScoped
 import javax.websocket.Session
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.launch
 import org.eclipse.microprofile.metrics.MetricUnits
 import org.eclipse.microprofile.metrics.annotation.Counted
@@ -55,8 +55,7 @@ class ReqMessageHandler(
                 for(filter in filters){
                     launch(Dispatchers.IO) {
                         try {
-                            val eventsMatchingFilter = eventService.findByFilters(filter)
-                            broadcastEvents(eventsMatchingFilter, subscription, sessionsContext.currentSession)
+                            broadcastEvents(filter, subscription, sessionsContext.currentSession)
                         } catch (e: Exception) {
                             throw RelayException("Error while fetching events for subscription: $subscriptionId")
                         }
@@ -65,8 +64,14 @@ class ReqMessageHandler(
             }
         }
 
-    private suspend fun broadcastEvents(events: Flow<Event<*>>, subscription: Subscription, currentSession: Session) {
-        events.collect { event ->
+    private suspend fun broadcastEvents(filter: Filter, subscription: Subscription, currentSession: Session) {
+        val events = eventService.findByFilters(filter)
+        events.onCompletion {
+            @NIP_15
+            currentSession.send(
+                Message(MessageType.EOSE, subscription.id)
+            )
+        }.collect { event ->
             currentSession.send(
                 Message(MessageType.EVENT, subscription.id, event)
             )
