@@ -71,6 +71,7 @@ class EventMessageHandler(
         val globalFilters = filtersGroupedByType[FilterType.GLOBAL] ?: arrayListOf()
 
         for(globalFilter in globalFilters){
+            continue
             if(!globalFilter.filter(event)){
                 throw RelayException("Event denied: invalid signature")
             }

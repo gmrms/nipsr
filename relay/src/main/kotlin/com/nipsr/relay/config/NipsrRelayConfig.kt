@@ -10,7 +10,7 @@ interface NipsrRelayConfig {
     fun description(): String
     fun pubkey(): String
     fun contact(): String
-    fun supportedNips(): List<String>
+    fun supportedNips(): List<Int>
     fun software(): String
     fun version(): String
 

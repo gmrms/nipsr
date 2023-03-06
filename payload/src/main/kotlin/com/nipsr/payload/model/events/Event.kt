@@ -15,6 +15,8 @@ import kotlin.properties.Delegates
     JsonSubTypes.Type(value = SetMetadataEvent::class, name = "0"),
     JsonSubTypes.Type(value = TextNoteEvent::class, name = "1"),
     JsonSubTypes.Type(value = RecommendServerEvent::class, name = "2"),
+    JsonSubTypes.Type(value = ContactListEvent::class, name = "3"),
+    JsonSubTypes.Type(value = DeletionEvent::class, name = "5"),
     JsonSubTypes.Type(value = UnknownEvent::class, name = ""),
 )
 sealed class Event<T> {
