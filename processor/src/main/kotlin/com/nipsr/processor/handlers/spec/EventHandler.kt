@@ -1,4 +1,4 @@
-package com.nipsr.processor.handlers
+package com.nipsr.processor.handlers.spec
 
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.KnownKinds

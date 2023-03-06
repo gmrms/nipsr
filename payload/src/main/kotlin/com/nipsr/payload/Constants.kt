@@ -11,4 +11,5 @@ object Constants {
     const val TEXT_NOTE = "text_note"
     const val SET_METADATA = "set_metadata"
     const val RECOMMEND_SERVER = "recommend_server"
+    const val CONTACT_LIST = "contact_list"
 }
