@@ -12,4 +12,9 @@ object Constants {
     const val SET_METADATA = "set_metadata"
     const val RECOMMEND_SERVER = "recommend_server"
     const val CONTACT_LIST = "contact_list"
+    const val DELETION = "deletion"
+
+    // Tags
+    const val EVENT_TAG = "e"
+    const val PUBKEY_TAG = "p"
 }

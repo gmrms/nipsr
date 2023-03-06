@@ -14,6 +14,9 @@ class ProcessorEventService : EventService() {
     suspend fun persist(event: Event<*>): InsertOneResult =
         collection.insertOne(event).awaitSuspending()
 
+    suspend fun deleteByIdsAndPubkey(ids: List<String>, pubkey: String): Long =
+        collection.deleteMany(doc("_id", doc("\$in", ids)).append("pubkey", pubkey)).awaitSuspending().deletedCount
+
     suspend fun deleteAllOfKindAndPubkey(kind: Int, pubkey: String): Long =
         collection.deleteMany(doc("kind", kind).append("pubkey", pubkey)).awaitSuspending().deletedCount
 

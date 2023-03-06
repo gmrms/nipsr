@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 
+@NIP_01
 class ReqMessageHandlerTest {
 
     val eventService = mockk<RelayEventService> {
@@ -24,7 +25,6 @@ class ReqMessageHandlerTest {
     val reqMessageHandler = ReqMessageHandler(eventService)
 
     @Test
-    @NIP_01
     fun `should handle REQ message`() = runTest {
         reqMessageHandler.handleMessage(defaultSessionsContext, MessageParts(
             "REQ",
@@ -37,7 +37,6 @@ class ReqMessageHandlerTest {
     }
 
     @Test(expected = IllegalArgumentException::class)
-    @NIP_01
     fun `should deny too large subscription Ids`() = runTest {
         val tooLarge = "a".repeat(1000)
         reqMessageHandler.handleMessage(defaultSessionsContext, MessageParts(
