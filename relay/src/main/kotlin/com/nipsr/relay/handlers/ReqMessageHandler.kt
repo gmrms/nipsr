@@ -57,7 +57,7 @@ class ReqMessageHandler(
                         try {
                             broadcastEvents(filter, subscription, sessionsContext.currentSession)
                         } catch (e: Exception) {
-                            throw RelayException("Error while fetching events for subscription: $subscriptionId")
+                            throw RelayException("Error while fetching events for subscription: $subscriptionId", e)
                         }
                     }
                 }

@@ -4,7 +4,6 @@ import com.nipsr.payload.ObjectMapperUtils.objectMapper
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_20
 import com.nipsr.relay.exeptions.EventErrorException
-import com.nipsr.relay.exeptions.RelayException
 import com.nipsr.relay.handlers.spec.MessageHandler
 import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.asNotice
@@ -26,6 +25,7 @@ import org.eclipse.microprofile.metrics.MetricUnits
 import org.eclipse.microprofile.metrics.annotation.Counted
 import org.eclipse.microprofile.metrics.annotation.Gauge
 import org.eclipse.microprofile.metrics.annotation.Timed
+import org.slf4j.LoggerFactory
 
 @NIP_01
 @ApplicationScoped
@@ -33,6 +33,8 @@ import org.eclipse.microprofile.metrics.annotation.Timed
 class WebSocketController(
     messageHandlers: Instance<MessageHandler>
 ) {
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val messageReader = objectMapper.readerForListOf(Any::class.java)
     private val handlersGroupedByMessageType = messageHandlers.groupBy { it.handlesType() }
@@ -55,6 +57,7 @@ class WebSocketController(
         if(throwable is EventErrorException){
             session.sendResult(throwable)
         } else {
+            logger.error("Error while processing message", throwable)
             session.send(throwable.asNotice())
         }
     }

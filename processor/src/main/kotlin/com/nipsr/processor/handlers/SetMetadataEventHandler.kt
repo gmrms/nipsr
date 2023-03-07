@@ -9,6 +9,5 @@ import javax.enterprise.context.ApplicationScoped
 @ApplicationScoped
 class SetMetadataEventHandler : EventHandler<SetMetadataEvent>() {
     override suspend fun handleEvent(event: SetMetadataEvent) {}
-
     override fun handlesType() = SetMetadataEvent::class
 }

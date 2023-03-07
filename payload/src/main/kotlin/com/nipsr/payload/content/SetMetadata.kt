@@ -5,5 +5,6 @@ import java.net.URI
 data class SetMetadata(
     val name: String,
     val about: String,
-    val picture: URI
+    val picture: URI,
+    val nip05: String
 )
