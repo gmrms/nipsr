@@ -10,6 +10,7 @@ import javax.ws.rs.Path
 import javax.ws.rs.Produces
 import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
+import kotlin.collections.HashMap
 
 @NIP_05
 @Path("/")
@@ -19,10 +20,17 @@ class NIP05Controller {
     @GET
     @Path("/.well-known/nostr.json")
     @Produces(MediaType.APPLICATION_JSON)
-    suspend fun nip05Address(@QueryParam("name") name: String?) = hashMapOf(
-        "names" to RelayIngress.listAll().awaitSuspending().associate {
-            it.identifier to it.pubkey
-        }
-    )
+    suspend fun nip05Address(@QueryParam("name") name: String?) : HashMap<String, HashMap<String, Any>> {
+        val accounts = RelayIngress.listAll().awaitSuspending()
+        val relays = arrayListOf("wss://public.nipsr.com")
+        return hashMapOf(
+            "names" to accounts.associate {
+                it.identifier to it.pubkey
+            } as HashMap<String, Any>,
+            "relays" to accounts.associate {
+                it.pubkey to relays
+            } as HashMap<String, Any>
+        )
+    }
 
 }
