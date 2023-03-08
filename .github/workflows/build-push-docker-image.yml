@@ -27,15 +27,27 @@ jobs:
         registry: ${{ env.registry }}
         username: ${{ github.actor }}
         password: ${{ github.token }}
-      
-    - name: "Extract metadata (tags, labels) for Docker"
-      id: metadata
+
+    - name: "[Relay] - Extract metadata (tags, labels) for Docker"
+      id: relay-metadata
       uses: docker/metadata-action@v4.3.0
       with:
         images: ${{ env.registry }}/${{ github.repository }}/relay
 
+    - name: "[Processor] - Extract metadata (tags, labels) for Docker"
+      id: processor-metadata
+      uses: docker/metadata-action@v4.3.0
+      with:
+        images: ${{ env.registry }}/${{ github.repository }}/processor
+
+    - name: "[Management] - Extract metadata (tags, labels) for Docker"
+      id: management-metadata
+      uses: docker/metadata-action@v4.3.0
+      with:
+        images: ${{ env.registry }}/${{ github.repository }}/management
+
     - name: Build with Maven
-      run: mvn -B package -Drevision=${{ steps.metadata.outputs.version }}
+      run: mvn -B package -Drevision=${{ steps.relay-metadata.outputs.version }}
       
     - name: "[Relay] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -43,8 +55,8 @@ jobs:
         context: relay
         push: true
         file: relay/src/main/docker/Dockerfile.jvm
-        tags: ${{ steps.metadata.outputs.tags }}
-        labels: ${{ steps.metadata.outputs.labels }}
+        tags: ${{ steps.relay-metadata.outputs.tags }}
+        labels: ${{ steps.relay-metadata.outputs.labels }}
       
     - name: "[Processor] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -52,8 +64,8 @@ jobs:
         context: processor
         push: true
         file: processor/src/main/docker/Dockerfile.jvm
-        tags: ${{ steps.metadata.outputs.tags }}
-        labels: ${{ steps.metadata.outputs.labels }}
+        tags: ${{ steps.processor-metadata.outputs.tags }}
+        labels: ${{ steps.processor-metadata.outputs.labels }}
 
     - name: "[Management] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -61,7 +73,7 @@ jobs:
         context: management
         push: true
         file: management/src/main/docker/Dockerfile.jvm
-        tags: ${{ steps.metadata.outputs.tags }}
-        labels: ${{ steps.metadata.outputs.labels }}
+        tags: ${{ steps.management-metadata.outputs.tags }}
+        labels: ${{ steps.management-metadata.outputs.labels }}
 
 
