@@ -46,6 +46,7 @@ abstract class EventHandler<T : Event<*>> {
     suspend fun replaceOldest(event: T){
         logger.debug("Replacing older events '${event.id}'")
         eventService.deleteOldersOfKindAndPubkey(event.created_at, event.kind, event.pubkey)
+        eventService.persist(event)
         logger.debug("Replaced older events '${event.id}'")
     }
 
