@@ -20,9 +20,6 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-        
-    - name: Build with Maven
-      run: mvn -B package
       
     - name: Log in to the Container registry
       uses: docker/login-action@v2.1.0
@@ -31,11 +28,14 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ github.token }}
       
-    - name: "[Relay] - Extract metadata (tags, labels) for Docker"
-      id: relay-metadata
+    - name: "Extract metadata (tags, labels) for Docker"
+      id: metadata
       uses: docker/metadata-action@v4.3.0
       with:
         images: ${{ env.registry }}/${{ github.repository }}/relay
+
+    - name: Build with Maven
+      run: mvn -B package -Drevision=${{ steps.metadata.outputs.tags[0] }}
       
     - name: "[Relay] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -43,14 +43,8 @@ jobs:
         context: relay
         push: true
         file: relay/src/main/docker/Dockerfile.jvm
-        tags: ${{ steps.relay-metadata.outputs.tags }}
-        labels: ${{ steps.relay-metadata.outputs.labels }}
-      
-    - name: "[Processor] - Extract metadata (tags, labels) for Docker"
-      id: processor-metadata
-      uses: docker/metadata-action@v4.3.0
-      with:
-        images: ${{ env.registry }}/${{ github.repository }}/processor
+        tags: ${{ steps.metadata.outputs.tags }}
+        labels: ${{ steps.metadata.outputs.labels }}
       
     - name: "[Processor] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
@@ -58,7 +52,16 @@ jobs:
         context: processor
         push: true
         file: processor/src/main/docker/Dockerfile.jvm
-        tags: ${{ steps.processor-metadata.outputs.tags }}
-        labels: ${{ steps.processor-metadata.outputs.labels }}
+        tags: ${{ steps.metadata.outputs.tags }}
+        labels: ${{ steps.metadata.outputs.labels }}
+
+    - name: "[Management] - Build and push Docker images"
+      uses: docker/build-push-action@v4.0.0
+      with:
+        context: management
+        push: true
+        file: management/src/main/docker/Dockerfile.jvm
+        tags: ${{ steps.metadata.outputs.tags }}
+        labels: ${{ steps.metadata.outputs.labels }}
 
 

@@ -24,6 +24,15 @@ services:
     depends_on:
       - rabbitmq
 
+  management:
+    image: ghcr.io/gmrms/nipsr/management:latest
+    restart: always
+    env_file:
+      - env/db.env
+      - env/management.env
+    depends_on:
+      - rabbitmq
+
   # Tools
 
   nginx:
