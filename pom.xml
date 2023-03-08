@@ -50,6 +50,7 @@
     <module>relay</module>
     <module>payload</module>
     <module>processor</module>
+    <module>management</module>
   </modules>
 
   <build>

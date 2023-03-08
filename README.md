@@ -6,6 +6,7 @@ This is a distributed Nostr relay implementation using Quarkus and Kotlin.
 
 - [X] NIP-01 - Basic protocol flow description
 - [X] NIP-02 - Contact List and Petnames
+- [ ] NIP-05 - Mapping Nostr keys to DNS-based internet identifiers
 - [X] NIP-09 - Event Deletion
 - [X] NIP-11 - Relay Information Document
 - [X] NIP-12 - Generic Tag Queries
@@ -17,8 +18,9 @@ This is a distributed Nostr relay implementation using Quarkus and Kotlin.
 
 ### Nipsr
 
-- **Relay** - Websocket server that handles the communication with clients
+- **Relay** - Websocket server that handles the communication with Nostr clients
 - **Processor** - Consumes the events from the relay and handles database persistence
+- **Management** - Manages users data like NIP-05 identifiers and relay access
 - **Payload** - Contains the data model and the serialization/deserialization logic
 
 ### Additional technologies
