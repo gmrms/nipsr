@@ -11,6 +11,7 @@ import com.nipsr.payload.model.inputs.EventInput
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_16
 import org.bson.codecs.pojo.annotations.BsonId
+import org.bson.codecs.pojo.annotations.BsonIgnore
 import kotlin.properties.Delegates
 
 @NIP_01
@@ -35,12 +36,15 @@ sealed class Event<T> {
     lateinit var sig: String
 
     @NIP_16
+    @BsonIgnore
     open fun isRegular() = kind in REGULAR_EVENTS_RANGE
 
     @NIP_16
+    @BsonIgnore
     open fun isReplaceable() = kind in REPLACEABLE_EVENTS_RANGE
 
     @NIP_16
+    @BsonIgnore
     open fun isEphemeral() = kind in EPHEMERAL_EVENTS_RANGE
 
     fun readContent() : T = objectMapper.readValue(content, KnownKinds.fromCode(kind).contentType.java) as T
