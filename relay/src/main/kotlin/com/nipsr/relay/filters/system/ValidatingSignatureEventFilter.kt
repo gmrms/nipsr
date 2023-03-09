@@ -9,6 +9,7 @@ import com.nipsr.relay.filters.EventFilter.Companion.ok
 import com.nipsr.relay.filters.FilterType
 import com.nipsr.relay.validation.Hashing
 import com.nipsr.relay.validation.Schnorr
+import io.quarkus.arc.profile.UnlessBuildProfile
 import javax.enterprise.context.ApplicationScoped
 
 /**
@@ -16,6 +17,7 @@ import javax.enterprise.context.ApplicationScoped
  */
 @NIP_01
 @ApplicationScoped
+@UnlessBuildProfile("dev")
 class ValidatingSignatureEventFilter : EventFilter {
 
     override fun filter(event: Event<*>) = if(event.isValid()){

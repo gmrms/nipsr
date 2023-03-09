@@ -4,7 +4,7 @@ import com.nipsr.relay.model.RelayMetadata
 import io.smallrye.config.ConfigMapping
 
 @ConfigMapping(prefix = "nipsr.relay")
-interface NipsrRelayConfig {
+interface NipsrRelayMetadata {
 
     fun name(): String
     fun description(): String

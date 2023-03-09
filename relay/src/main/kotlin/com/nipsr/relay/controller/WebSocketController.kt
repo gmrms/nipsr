@@ -3,8 +3,10 @@ package com.nipsr.relay.controller
 import com.nipsr.payload.ObjectMapperUtils.objectMapper
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_20
+import com.nipsr.relay.config.NipsrRelaySettings
 import com.nipsr.relay.exeptions.EventErrorException
 import com.nipsr.relay.handlers.spec.MessageHandler
+import com.nipsr.relay.message.Message
 import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.asNotice
 import com.nipsr.relay.message.SessionMessageExtension.send
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory
 @ApplicationScoped
 @ServerEndpoint("/")
 class WebSocketController(
+    private val settings: NipsrRelaySettings,
     messageHandlers: Instance<MessageHandler>
 ) {
 
@@ -43,12 +46,18 @@ class WebSocketController(
 
     @OnOpen
     fun onOpen(session: Session) {
+        if(sessions.size >= settings.maxConnections()){
+            session.send(Message(MessageType.NOTICE, "Connections are full, please try again later"))
+            session.close()
+            return
+        }
         sessions[session] = SessionInfo()
     }
 
     @OnClose
     fun onClose(session: Session) {
         sessions.remove(session)
+        session.close()
     }
 
     @OnError
