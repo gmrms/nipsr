@@ -13,7 +13,7 @@ This is a distributed Nostr relay implementation using Quarkus and Kotlin.
 - [X] NIP-15 - End of Stored Events Notice
 - [X] NIP-16 - Event Treatment
 - [X] NIP-20 - Command Results
-- [X] NIP-22 - Command Results
+- [X] NIP-22 - Event created_at Limits
 
 ## Architecture
 
