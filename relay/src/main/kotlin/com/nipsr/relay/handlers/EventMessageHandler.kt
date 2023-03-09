@@ -82,7 +82,6 @@ class EventMessageHandler(
     private fun applyGlobalFilters(event: Event<*>) {
         val globalFilters = filtersGroupedByType[FilterType.GLOBAL] ?: arrayListOf()
         for(globalFilter in globalFilters){
-            continue
             val (result, message) = globalFilter.filter(event)
             if(!result){
                 throw EventErrorException(event, message)
