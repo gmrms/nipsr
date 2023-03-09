@@ -21,7 +21,7 @@ class ProcessorEventService : EventService() {
         collection.deleteMany(
             doc("kind", kind)
                 .append("pubkey", pubkey)
-                .append("created_at", doc("\$lt", createdAt))
+                .append("created_at", doc("\$lte", createdAt))
         ).awaitSuspending().deletedCount
 
 }

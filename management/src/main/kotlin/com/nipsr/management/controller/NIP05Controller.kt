@@ -20,7 +20,7 @@ class NIP05Controller {
     @GET
     @Path("/.well-known/nostr.json")
     @Produces(MediaType.APPLICATION_JSON)
-    suspend fun nip05Address(@QueryParam("name") name: String?) : HashMap<String, HashMap<String, Any>> {
+    suspend fun nip05AddressVerify(@QueryParam("name") name: String?) : HashMap<String, HashMap<String, Any>> {
         val accounts = RelayIngress.listAll().awaitSuspending()
         val relays = arrayListOf("wss://public.nipsr.com")
         return hashMapOf(

@@ -1,5 +1,6 @@
 package com.nipsr.processor.handlers
 
+import com.nipsr.payload.model.EventType
 import com.nipsr.payload.model.events.Event
 import com.nipsr.processor.handlers.spec.EventHandler
 import com.nipsr.processor.service.ProcessorEventService
@@ -22,16 +23,12 @@ class EventHandlerTest {
         this.eventService = processorEventService
     }
 
-    val event = mockk<Event<*>>(relaxed = true) {
-        every { isRegular() } returns false
-        every { isReplaceable() } returns false
-        every { isEphemeral() } returns false
-    }
+    val event = mockk<Event<*>>(relaxed = true)
 
     @Test
     fun `should persist regular events`() = runTest {
         // given
-        every { event.isRegular() } returns true
+        every { event.readEventType() } returns EventType.REGULAR
         // when
         eventHandler.handle(event)
         // then
@@ -41,7 +38,7 @@ class EventHandlerTest {
     @Test
     fun `should replace older events of replaceable events`() = runTest {
         // given
-        every { event.isReplaceable() } returns true
+        every { event.readEventType() } returns EventType.REPLACEABLE
         // when
         eventHandler.handle(event)
         // then
@@ -54,7 +51,7 @@ class EventHandlerTest {
     @Test
     fun `should do nothing on ephemeral events`() = runTest {
         // given
-        every { event.isEphemeral() } returns true
+        every { event.readEventType() } returns EventType.EPHEMERAL
         // when
         eventHandler.handle(event)
         // then
