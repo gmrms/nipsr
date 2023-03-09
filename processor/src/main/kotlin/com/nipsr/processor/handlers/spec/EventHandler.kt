@@ -1,5 +1,6 @@
 package com.nipsr.processor.handlers.spec
 
+import com.nipsr.payload.model.EventType
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.KnownKinds
 import com.nipsr.processor.service.ProcessorEventService
@@ -30,10 +31,10 @@ abstract class EventHandler<T : Event<*>> {
     }
 
     open suspend fun handlePersistence(event: T) {
-        if(event.isRegular()){
-            persist(event)
-        } else if(event.isReplaceable()) {
-            replaceOldest(event)
+        when(event.readEventType()){
+            EventType.REGULAR -> persist(event)
+            EventType.REPLACEABLE -> replaceOldest(event)
+            EventType.EPHEMERAL -> {}
         }
     }
 

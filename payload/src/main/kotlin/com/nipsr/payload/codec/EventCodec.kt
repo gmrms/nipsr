@@ -20,7 +20,7 @@ class EventCodec : CollectibleCodec<Event<*>> {
     private val documentCodec = MongoClientSettings.getDefaultCodecRegistry().get(Document::class.java)
 
     override fun encode(writer: BsonWriter, value: Event<*>, encoderContext: EncoderContext) {
-        TODO("Not yet implemented")
+        throw IllegalAccessException("Should not be used")
     }
 
     override fun decode(reader: BsonReader, decoderContext: DecoderContext): Event<*> {
