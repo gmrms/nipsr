@@ -7,11 +7,11 @@ enum class EventType(val kinds: IntRange, vararg val additions: KnownKinds) {
     REPLACEABLE(Constants.REPLACEABLE_EVENTS_RANGE, KnownKinds.CONTACT_LIST, KnownKinds.SET_METADATA),
     EPHEMERAL(Constants.EPHEMERAL_EVENTS_RANGE);
     companion object {
-        fun fromKind(kind: Int) = values().first {
+        fun fromKind(kind: Int) = values().firstOrNull {
             kind in it.kinds ||
             kind in it.additions.map { known ->
                 known.kind
             }
-        }
+        } ?: REGULAR
     }
 }
