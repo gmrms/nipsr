@@ -3,6 +3,7 @@ package com.nipsr.relay.filters.global
 import com.nipsr.payload.Constants.NONCE_TAG
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_13
+import com.nipsr.relay.config.NipsrRelaySettings
 import com.nipsr.relay.filters.EventFilter
 import com.nipsr.relay.filters.EventFilter.Companion.ok
 import com.nipsr.relay.filters.EventFilter.Companion.pow
@@ -13,18 +14,28 @@ import kotlin.experimental.and
 
 @NIP_13
 @ApplicationScoped
-class PoWEventFilter : EventFilter {
+class PoWEventFilter(
+    private val settings: NipsrRelaySettings
+) : EventFilter {
+
     override fun filter(event: Event<*>) : Pair<Boolean, String?> {
-        val nonceTag = event.tags.find { it.tag == NONCE_TAG } ?: return ok()
-        val difficultyTarget = nonceTag.options.first().toInt()
-        val difficultyAchieved = getDifficulty(event)
-        if(difficultyAchieved != difficultyTarget){
-            return false pow "The provided difficulty is $difficultyAchieved but the target is $difficultyTarget"
+        val target = getTargetDifficulty(event)
+        if(settings.minPowRequired() > target){
+            return false pow "The minimum difficulty required is ${settings.minPowRequired()} but the target was $target"
+        }
+        val achieved = getAchievedDifficulty(event)
+        if(achieved != target){
+            return false pow "The provided difficulty is $achieved but the target was $target"
         }
         return ok()
     }
 
-    private fun getDifficulty(event: Event<*>) = countLeadingZeroBits(
+    private fun getTargetDifficulty(event: Event<*>) : Int {
+        val nonceTag = event.tags.find { it.tag == NONCE_TAG } ?: return 0
+        return nonceTag.options.first().toInt()
+    }
+
+    private fun getAchievedDifficulty(event: Event<*>) = countLeadingZeroBits(
         HexFormat.of().parseHex(event.id)
     )
 

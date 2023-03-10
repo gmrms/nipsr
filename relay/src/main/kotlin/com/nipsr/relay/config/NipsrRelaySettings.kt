@@ -1,5 +1,6 @@
 package com.nipsr.relay.config
 
+import com.nipsr.payload.nips.NIP_13
 import com.nipsr.payload.nips.NIP_22
 import io.smallrye.config.ConfigMapping
 
@@ -10,5 +11,8 @@ interface NipsrRelaySettings {
 
     @NIP_22
     fun maxCreatedAtDriftMinutes(): Int
+
+    @NIP_13
+    fun minPowRequired(): Int
 
 }

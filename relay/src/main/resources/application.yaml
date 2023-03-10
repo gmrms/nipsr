@@ -39,3 +39,4 @@ nipsr:
       # UTC+14:00 to UTC-12:00
       # Plus 15 minutes to be safe
       max-created-at-drift-minutes: ${NIPSR_RELAY_MAX_CREATED_AT_DRIFT_MINUTES:1575}
+      min-pow-required: ${NIPSR_RELAY_MIN_POW_REQUIRED:0}
