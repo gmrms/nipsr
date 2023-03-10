@@ -15,9 +15,11 @@ class ValidatingSignatureEventFilterTest {
 
     @Test
     fun `should allow events with valid signatures`(){
-        val toTest = TestEvents.validEvents.first()
-        val (result, _) = validatingSignatureEventFilter.filter(toTest)
-        assertTrue(result)
+        val toTest = TestEvents.validEvents
+        for (event in toTest){
+            val (result, _) = validatingSignatureEventFilter.filter(event)
+            assertTrue(result)
+        }
     }
 
     @Test

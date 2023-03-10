@@ -44,7 +44,7 @@ class ValidatingSignatureEventFilter : EventFilter {
             this.pubkey,
             this.created_at,
             this.kind,
-            this.tags,
+            this.tags.map { it.toList() },
             this.content
         )
     }
