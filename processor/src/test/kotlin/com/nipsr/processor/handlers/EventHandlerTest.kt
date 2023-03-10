@@ -2,6 +2,7 @@ package com.nipsr.processor.handlers
 
 import com.nipsr.payload.model.EventType
 import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.utils.EventsExtensions.getEventType
 import com.nipsr.processor.handlers.spec.EventHandler
 import com.nipsr.processor.service.ProcessorEventService
 import io.mockk.Called
@@ -28,7 +29,7 @@ class EventHandlerTest {
     @Test
     fun `should persist regular events`() = runTest {
         // given
-        every { event.readEventType() } returns EventType.REGULAR
+        every { event.getEventType() } returns EventType.REGULAR
         // when
         eventHandler.handle(event)
         // then
@@ -38,7 +39,7 @@ class EventHandlerTest {
     @Test
     fun `should replace older events of replaceable events`() = runTest {
         // given
-        every { event.readEventType() } returns EventType.REPLACEABLE
+        every { event.getEventType() } returns EventType.REPLACEABLE
         // when
         eventHandler.handle(event)
         // then
@@ -51,7 +52,7 @@ class EventHandlerTest {
     @Test
     fun `should do nothing on ephemeral events`() = runTest {
         // given
-        every { event.readEventType() } returns EventType.EPHEMERAL
+        every { event.getEventType() } returns EventType.EPHEMERAL
         // when
         eventHandler.handle(event)
         // then

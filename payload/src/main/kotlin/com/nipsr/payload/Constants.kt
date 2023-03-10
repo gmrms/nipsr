@@ -17,6 +17,7 @@ object Constants {
     // Tags
     const val EVENT_TAG = "e"
     const val PUBKEY_TAG = "p"
+    const val NONCE_TAG = "nonce"
 
     // Events Types
     val REGULAR_EVENTS_RANGE = 1000 until 10000

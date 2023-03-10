@@ -1,4 +1,4 @@
-package com.nipsr.relay.filters.system
+package com.nipsr.relay.filters.global
 
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_22

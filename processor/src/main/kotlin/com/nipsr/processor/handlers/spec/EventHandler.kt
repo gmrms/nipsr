@@ -1,8 +1,9 @@
 package com.nipsr.processor.handlers.spec
 
 import com.nipsr.payload.model.EventType
-import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.model.KnownKinds
+import com.nipsr.payload.model.events.Event
+import com.nipsr.payload.utils.EventsExtensions.getEventType
 import com.nipsr.processor.service.ProcessorEventService
 import javax.inject.Inject
 import org.slf4j.LoggerFactory
@@ -31,7 +32,7 @@ abstract class EventHandler<T : Event<*>> {
     }
 
     open suspend fun handlePersistence(event: T) {
-        when(event.readEventType()){
+        when(event.getEventType()){
             EventType.REGULAR -> persist(event)
             EventType.REPLACEABLE -> replaceOldest(event)
             EventType.EPHEMERAL -> {}
