@@ -1,0 +1,41 @@
+quarkus:
+  http:
+    port: ${SERVER_PORT:8080}
+    cors:
+      ~: true
+      origins: /.*/
+      methods: GET,OPTIONS
+      headers: accept,content-type
+      exposed-headers: accept,content-type
+      access-control-max-age: 24H
+      access-control-allow-credentials: false
+  mongodb:
+    database: ${MONGODB_DATABASE:nipsr}
+    connection-string: ${MONGODB_CONNECTION_STRING:mongodb://nipsr:nipsr@localhost:27017}
+
+mp:
+  messaging:
+    outgoing:
+      events:
+        connector: smallrye-rabbitmq
+
+rabbitmq-host: ${RABBITMQ_HOST:localhost}
+rabbitmq-port: ${RABBITMQ_PORT:5672}
+rabbitmq-username: ${RABBITMQ_USER:nipsr}
+rabbitmq-password: ${RABBITMQ_PASS:nipsr}
+
+nipsr:
+  relay:
+    name: ${NIPSR_RELAY_NAME:nipsr}
+    description: ${NIPSR_RELAY_DESCRIPTION:Nipsr relay}
+    version: ${quarkus.application.version}
+    pubkey: ${NIPSR_RELAY_PUBKEY:pubkey}
+    contact: ${NIPSR_RELAY_CONTACT:contact}
+    software: https://github.com/gmrms/nipsr
+    supported-nips: 1,2,9,11,12,13,15,16,20,22
+    settings:
+      max-connections: ${NIPSR_RELAY_MAX_CONNECTIONS:300}
+      # 26 hours is the biggest time zone difference that exists
+      # UTC+14:00 to UTC-12:00
+      # Plus 15 minutes to be safe
+      max-created-at-drift-minutes: ${NIPSR_RELAY_MAX_CREATED_AT_DRIFT_MINUTES:1575}

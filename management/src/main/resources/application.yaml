@@ -1,0 +1,14 @@
+quarkus:
+  http:
+    port: ${SERVER_PORT:8888}
+    cors:
+      ~: true
+      origins: /.*/
+      methods: GET,OPTIONS
+      headers: accept,content-type
+      exposed-headers: accept,content-type
+      access-control-max-age: 24H
+      access-control-allow-credentials: false
+  mongodb:
+    database: ${MONGODB_DATABASE:nipsr}
+    connection-string: ${MONGODB_CONNECTION_STRING:mongodb://nipsr:nipsr@localhost:27017}
