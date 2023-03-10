@@ -2,7 +2,7 @@ package com.nipsr.relay.filters
 
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.TestEvents
-import com.nipsr.relay.filters.system.ValidatingSignatureEventFilter
+import com.nipsr.relay.filters.global.ValidatingSignatureEventFilter
 import io.mockk.spyk
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

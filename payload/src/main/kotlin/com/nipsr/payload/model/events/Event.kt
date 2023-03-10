@@ -35,11 +35,6 @@ sealed class Event<T> {
     var content: String = ""
     lateinit var sig: String
 
-    @NIP_16
-    fun readEventType() = EventType.fromKind(kind)
-
-    fun readContent() : T = objectMapper.readValue(content, KnownKinds.fromCode(kind).contentType.java) as T
-
     fun fromDTO(dto: EventInput) : Event<T> {
         id = dto.id
         pubkey = dto.pubkey

@@ -1,4 +1,4 @@
-package com.nipsr.relay.filters.system
+package com.nipsr.relay.filters.global
 
 import com.nipsr.payload.ObjectMapperUtils.toJsonByteArray
 import com.nipsr.payload.model.events.Event

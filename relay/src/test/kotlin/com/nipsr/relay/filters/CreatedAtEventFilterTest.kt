@@ -3,7 +3,7 @@ package com.nipsr.relay.filters
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_22
 import com.nipsr.relay.config.NipsrRelaySettings
-import com.nipsr.relay.filters.system.CreatedAtEventFilter
+import com.nipsr.relay.filters.global.CreatedAtEventFilter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
