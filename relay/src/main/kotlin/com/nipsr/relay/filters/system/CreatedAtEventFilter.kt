@@ -10,7 +10,7 @@ import com.nipsr.relay.filters.FilterType
 import javax.enterprise.context.ApplicationScoped
 
 /**
- * An event filter that validates the signature of an event.
+ * An event filter that validates the creation date of an event.
  */
 @NIP_22
 @ApplicationScoped
@@ -24,17 +24,21 @@ class CreatedAtEventFilter(
     override fun filter(event: Event<*>) : Pair<Boolean, String?> {
         val maxCreatedAtDriftMinutes = settings.maxCreatedAtDriftMinutes()
         val createdAt = event.created_at
-        val now = System.currentTimeMillis()
-        val createdAtDrift = now - createdAt
-        val createdAtDriftMinutes = createdAtDrift / 1000 / 60
+        val currentTimeSeconds = System.currentTimeMillis() / 1000
+        val createdAtDrift = currentTimeSeconds - createdAt
+        val createdAtDriftMinutes = createdAtDrift / 60
         return if(createdAtDriftMinutes <= maxCreatedAtDriftMinutes){
             ok()
         } else {
-            false invalid  "Event created_at is too far in the past, " +
-                           "the allowed drift is $maxCreatedAtDriftMinutes minutes"
+            false invalid  "The allowed time drift is $maxCreatedAtDriftMinutes minutes " +
+                           "but a difference of $createdAtDriftMinutes minutes was detected."
         }
     }
 
     override fun type() = FilterType.GLOBAL
 
+}
+
+fun main() {
+    println(System.currentTimeMillis())
 }

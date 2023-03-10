@@ -30,7 +30,7 @@ class CreatedAtEventFilterTest {
 
     @Test
     fun `should not allow events with created_at outside params`(){
-        every { event.created_at } returns System.currentTimeMillis() - 1000 * 60 * (maxCreatedAtDriftMinutes + 1)
+        every { event.created_at } returns System.currentTimeMillis() / 1000 - 60 * (maxCreatedAtDriftMinutes + 1)
         val (result, _) = createdAtEventFilter.filter(event)
         assertFalse(result)
     }
