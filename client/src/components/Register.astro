@@ -1,0 +1,78 @@
+<div id="registration">
+    <h2>Registration</h2>
+    <p>Registering grants you access to our private relay at <span>wss://private.nipsr.com</span></p>
+    <form>
+        <div>
+            <input name="identifier" type="text" placeholder="you" minlength="2"/>
+            <span>@</span>
+            <select name="domain">
+                <option value="nipsr.com">nipsr.com</option>
+                <option value="nipsr.io">nipsr.io</option>
+                <option value="nipsr.com.br">nipsr.com.br</option>
+            </select>
+        </div>
+        <input name="pubkey" type="text" placeholder="pubkey" minlength="32"/>
+        <p id="availability"><span class="accent">Available</span> for <span>30000</span> sats</p>
+        <button type="submit">SUBMIT</button>
+    </form>
+</div>
+
+<style>
+
+    p {
+        margin: var(--spacing) 0;
+        text-align: center;
+    }
+
+    form {
+        max-width: 400px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    form > div {
+        flex-direction: row;
+        display: flex;
+        align-items: center;
+    }
+
+    form > div > span {
+        font-size: 1.3rem;
+        margin: 0 0.5rem;
+    }
+
+    input[type="text"], select {
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    input[name="identifier"] {
+        text-align: right;
+    }
+
+    button[type="submit"] {
+        background-color: var(--medium);
+        border-radius: 5px;
+        font-size: 1.2rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        text-align: center;
+    }
+
+    #availability {
+        text-align: center;
+        margin: 1rem 0;
+        font-size: 1rem;
+    }
+
+    #availability > span.accent {
+        color: var(--accent);
+    }
+</style>

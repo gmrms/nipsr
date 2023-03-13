@@ -1,0 +1,46 @@
+<div id="title">
+    <div>
+        <h1>Welcome to <span>Nipsr</span></h1>
+        <p>
+            Nipsr is a <span>free and open-source</span> set of backend applications built for and by those who want to 
+            host their own <b>relay</b> and <b>NIP-05</b> identifier provider in a <span>reliable</span>, <span>scalable</span> and <span>simple</span> maner.
+        </p>
+        <div id="actions">
+            <a href="#registration" class="accent">Get a NIP-05 id +</a>
+            <a href="https://github.com/gmrms/nipsr" target="_blank">Learn more</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    #title {
+        text-align: center;
+        padding: var(--spacing) var(--spacing2x);
+		background: radial-gradient(circle, var(--medium) 0%, var(--dark) 50%);
+        height: 100vh;
+        display: flex;
+        align-items: center;
+    }
+
+    #actions {
+        text-align: center;
+        padding: var(--spacing);
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing);
+    }
+
+    #actions a {
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        color: var(--light-gray);
+    }
+
+    #actions a.accent {
+        color: var(--accent);
+        background-color: rgba(255, 255, 255, 0.03);
+    }
+</style>
