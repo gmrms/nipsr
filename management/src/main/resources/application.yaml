@@ -12,3 +12,16 @@ quarkus:
   mongodb:
     database: ${MONGODB_DATABASE:nipsr}
     connection-string: ${MONGODB_CONNECTION_STRING:mongodb://nipsr:nipsr@localhost:27017}
+  rest-client:
+    lnbits:
+      url: ${LNBITS_API_URL:https://legend.lnbits.com/api/v1}
+
+nipsr:
+  management:
+    nip05:
+      min-digits: 2
+      base-price: 100
+    payment:
+      lnbits:
+        enabled: true
+        api-key: ${LNBITS_API_KEY}
