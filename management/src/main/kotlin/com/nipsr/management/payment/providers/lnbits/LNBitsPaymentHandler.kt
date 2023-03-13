@@ -13,26 +13,17 @@ import org.eclipse.microprofile.rest.client.inject.RestClient
 @IfBuildProperty(name = "$LNBITS_CONFIG.enabled", stringValue = "true")
 class LNBitsPaymentHandler(
     @RestClient
-    private val client: LNBitsClient
+    private val lnBitsClient: LNBitsClient
 ) : PaymentHandler {
 
-    override suspend fun createInvoice(invoiceInput: InvoiceInput): Invoice {
-        val lnBitsInvoice = LNBItsInvoice.fromInvoiceInput(invoiceInput)
-        val lnBitsInvoiceResponse = client.createInvoice(lnBitsInvoice)
-        val invoice = Invoice().apply {
-            this.amount = invoiceInput.amount
-            this.pubkey = invoiceInput.pubkey
-            this.memo = invoiceInput.memo
-            this.identifier = invoiceInput.identifier
-            this.data = lnBitsInvoiceResponse.payment_request
-            this.externalId = lnBitsInvoiceResponse.checking_id
-            this.expiration = lnBitsInvoice.expiry
-        }
-        return invoice
+    override suspend fun createInvoice(invoice: InvoiceInput): Invoice {
+        val lnBitsInvoice = LNBItsInvoice.fromInvoiceInput(invoice)
+        val lnBitsInvoiceResponse = lnBitsClient.createInvoice(lnBitsInvoice)
+        return lnBitsInvoiceResponse.toInvoice(invoice)
     }
 
     override suspend fun wasPaid(invoice: Invoice): Boolean {
-        return client.getInvoice(invoice.externalId).paid
+        return lnBitsClient.getInvoice(invoice.externalId).paid
     }
 
     override fun provider() = PaymentProvider.LNBits

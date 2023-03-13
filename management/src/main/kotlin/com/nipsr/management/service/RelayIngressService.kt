@@ -5,10 +5,10 @@ import com.nipsr.management.model.AvailabilityResponse
 import com.nipsr.management.model.Invoice
 import com.nipsr.management.model.InvoiceInput
 import com.nipsr.management.model.RelayIngress
-import com.nipsr.management.payment.PaymentService
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import java.time.Duration
 import javax.enterprise.context.ApplicationScoped
+import javax.ws.rs.BadRequestException
 
 @ApplicationScoped
 class RelayIngressService(
@@ -24,19 +24,21 @@ class RelayIngressService(
         }
     ).awaitSuspending()
 
-    suspend fun findAllIngressByName(name: String) =
-        RelayIngress.find("identifier", name)
-            .list().awaitSuspending()
+    suspend fun findAllIngressByAddress(address: String) = RelayIngress.findAllByIdentifier(address)
 
     suspend fun checkAvailability(address: String) = AvailabilityResponse(
-        RelayIngress.find("identifier", address)
-            .count().awaitSuspending() == 0L,
+        isAvailable(address),
         getPrice(address)
     )
 
+    private suspend fun isAvailable(address: String) = RelayIngress.existsByIdentifier(address)
+
     suspend fun requestAddress(pubkey: String, address: String): Invoice {
         if(niP05Config.minDigits() > address.length){
-            throw Exception("Address too short the minimum is ${niP05Config.minDigits()}")
+            throw BadRequestException("Address too short. The minimum length is ${niP05Config.minDigits()}.")
+        }
+        if(!isAvailable(address)){
+            throw BadRequestException("Address already taken.")
         }
         val invoiceInput = InvoiceInput(
             pubkey = pubkey,

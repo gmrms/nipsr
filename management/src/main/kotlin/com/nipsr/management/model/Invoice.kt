@@ -3,6 +3,7 @@ package com.nipsr.management.model
 import io.quarkus.mongodb.panache.common.MongoEntity
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoCompanion
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoEntity
+import io.smallrye.mutiny.coroutines.awaitSuspending
 
 
 @MongoEntity(collection = "invoice")
@@ -19,5 +20,8 @@ class Invoice : ReactivePanacheMongoEntity() {
 
     var paid = false
 
-    companion object : ReactivePanacheMongoCompanion<Invoice>
+    companion object : ReactivePanacheMongoCompanion<Invoice> {
+        suspend fun findAllNotPaid() =
+            find("paid", false).list().awaitSuspending()
+    }
 }

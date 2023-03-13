@@ -1,13 +1,13 @@
-package com.nipsr.management.payment
+package com.nipsr.management.service
 
 import com.nipsr.management.model.Invoice
 import com.nipsr.management.model.InvoiceInput
 import com.nipsr.management.payment.providers.PaymentHandler
-import com.nipsr.management.service.RelayIngressService
 import io.quarkus.scheduler.Scheduled
 import io.smallrye.mutiny.coroutines.awaitSuspending
 import javax.enterprise.context.ApplicationScoped
 import javax.enterprise.inject.Instance
+import javax.ws.rs.InternalServerErrorException
 import org.slf4j.LoggerFactory
 
 @ApplicationScoped
@@ -32,7 +32,7 @@ class PaymentService(
             }
         }
         if(invoice == null) {
-            throw Exception("No payment handler available")
+            throw InternalServerErrorException("No payment handler available")
         }
         return invoice.persist<Invoice>().awaitSuspending()
     }
@@ -45,7 +45,7 @@ class PaymentService(
 
     @Scheduled(every = "15s")
     suspend fun checkInvoice() {
-        val notPaidInvoices = Invoice.find("paid", false).list().awaitSuspending()
+        val notPaidInvoices = Invoice.findAllNotPaid()
         for(invoice in notPaidInvoices){
             if(invoice.expiration < System.currentTimeMillis() / 1000) {
                 invoice.delete().awaitSuspending()

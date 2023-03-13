@@ -1,7 +1,7 @@
 package com.nipsr.management.payment.providers.lnbits.payload
 
 import com.nipsr.management.model.InvoiceInput
-import java.util.*
+import com.nipsr.management.payment.InvoiceResponse.Companion.secondsFromNow
 
 data class LNBItsInvoice(
     val amount: Long,
@@ -15,7 +15,7 @@ data class LNBItsInvoice(
             return LNBItsInvoice(
                 amount = invoiceInput.amount,
                 memo = invoiceInput.memo,
-                expiry = Calendar.getInstance().timeInMillis / 1000 + invoiceInput.duration.toSeconds()
+                expiry = invoiceInput.duration.secondsFromNow()
             )
         }
     }

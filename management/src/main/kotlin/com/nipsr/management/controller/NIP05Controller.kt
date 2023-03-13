@@ -21,7 +21,7 @@ class NIP05Controller(
     @Path("/.well-known/nostr.json")
     @Produces(MediaType.APPLICATION_JSON)
     suspend fun nip05AddressVerify(@QueryParam("name") name: String) : Map<String, Map<String, String>> {
-        val accounts = relayIngressService.findAllIngressByName(name)
+        val accounts = relayIngressService.findAllIngressByAddress(name)
         return mapOf(
             "names" to accounts.associate {
                 it.identifier to it.pubkey
