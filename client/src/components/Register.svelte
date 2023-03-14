@@ -10,8 +10,12 @@
         console.log("onSubmit")
     }
 
+    function getApiHost() {
+        return import.meta.env.PUBLIC_NIPSR_API_HOST ? import.meta.env.PUBLIC_NIPSR_API_HOST : '' // use local host if not set
+    }
+
     function fetchAvailability(identifier){
-        return fetch(`${import.meta.env.PUBLIC_NIPSR_API_HOST}/api/identifier/${identifier}`)
+        return fetch(`${getApiHost()}/api/identifier/${identifier}`)
             .then(res => res.json())
     }
 
@@ -36,8 +40,8 @@
             <input name="identifier" type="text" placeholder="you" minlength="2" bind:value={identifierRequest.identifier} on:change={calculatePricing}/>
             <span>@</span>
             <select name="domain" bind:value={identifierRequest.domain}>
-                <option value="nipsr.com">nipsr.com</option>
                 <option value="nipsr.io">nipsr.io</option>
+                <option value="nipsr.com">nipsr.com</option>
                 <option value="nipsr.com.br">nipsr.com.br</option>
             </select>
         </div>
@@ -87,6 +91,10 @@
         padding: 0.5rem 1rem;
         width: 100%;
         text-align: center;
+    }
+
+    select option {
+        background-color: var(--dark);
     }
 
     input[name="identifier"] {
