@@ -7,11 +7,11 @@
     let pricing = 0;
 
     function onSubmit(){
-        calculated = !calculated;
+        console.log("onSubmit")
     }
 
     function fetchAvailability(identifier){
-        return fetch(`http://localhost:8080/api/identifier/${identifier}`)
+        return fetch(`${import.meta.env.PUBLIC_NIPSR_API_HOST}/api/identifier/${identifier}`)
             .then(res => res.json())
     }
 

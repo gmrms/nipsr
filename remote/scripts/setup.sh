@@ -9,4 +9,5 @@ sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
 
 # Run certbot
-sudo certbot certonly --standalone -d public.nipsr.com
+sudo certbot certonly --standalone -d $NIPSR_RELAY_DOMAIN
+sudo certbot certonly --standalone -d $NIPSR_ROOT_DOMAIN

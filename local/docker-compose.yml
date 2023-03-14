@@ -41,6 +41,12 @@ services:
     depends_on:
       - mongo
 
+  client:
+    build:
+      context: ../client
+      dockerfile: ./docker/Dockerfile
+    restart: unless-stopped
+
   # Other
 
   nginx:
