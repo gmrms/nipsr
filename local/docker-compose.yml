@@ -6,8 +6,8 @@ services:
 
   relay:
     build:
-      context: ../relay
-      dockerfile: ../relay/src/main/docker/Dockerfile.jvm
+      context: ../server/relay
+      dockerfile: ../server/relay/src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
@@ -19,8 +19,8 @@ services:
 
   processor:
     build:
-      context: ../processor
-      dockerfile: ../processor/src/main/docker/Dockerfile.jvm
+      context: ../server/processor
+      dockerfile: ../server/processor/src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
@@ -32,8 +32,8 @@ services:
 
   management:
     build:
-      context: ../management
-      dockerfile: ../management/src/main/docker/Dockerfile.jvm
+      context: ../server/management
+      dockerfile: ../server/management/src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
