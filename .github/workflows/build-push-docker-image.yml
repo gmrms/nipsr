@@ -90,7 +90,7 @@ jobs:
       with:
         context: client
         push: true
-        file: client/docker/Dockerfile.jvm
+        file: client/docker/Dockerfile
         tags: ${{ steps.client-metadata.outputs.tags }}
         labels: ${{ steps.client-metadata.outputs.labels }}
 
