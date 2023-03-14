@@ -1,4 +1,4 @@
-package com.nipsr.management.model
+package com.nipsr.management.model.payload
 
 import java.time.Duration
 

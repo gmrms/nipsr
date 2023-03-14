@@ -1,7 +1,7 @@
 package com.nipsr.management.service
 
 import com.nipsr.management.model.Invoice
-import com.nipsr.management.model.InvoiceInput
+import com.nipsr.management.model.payload.InvoiceInput
 import com.nipsr.management.payment.providers.PaymentHandler
 import io.quarkus.scheduler.Scheduled
 import io.smallrye.mutiny.coroutines.awaitSuspending
@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory
 @ApplicationScoped
 class PaymentService(
     private val paymentHandlers: Instance<PaymentHandler>,
-    private val relayIngressService: RelayIngressService
+    private val identifierService: IdentifierService
 ) {
 
     val logger = LoggerFactory.getLogger(this::class.java)
@@ -38,7 +38,7 @@ class PaymentService(
     }
 
     private suspend fun onPaymentSuccess(invoice: Invoice){
-        relayIngressService.create(
+        identifierService.create(
             invoice.pubkey, invoice.identifier
         )
     }

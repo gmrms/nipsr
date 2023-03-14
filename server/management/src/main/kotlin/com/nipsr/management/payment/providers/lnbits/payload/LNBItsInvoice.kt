@@ -1,6 +1,6 @@
 package com.nipsr.management.payment.providers.lnbits.payload
 
-import com.nipsr.management.model.InvoiceInput
+import com.nipsr.management.model.payload.InvoiceInput
 import com.nipsr.management.payment.InvoiceResponse.Companion.secondsFromNow
 
 data class LNBItsInvoice(

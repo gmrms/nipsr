@@ -19,8 +19,8 @@ quarkus:
 nipsr:
   management:
     nip05:
-      min-digits: 2
-      base-price: 100
+      min-digits: ${NIP05_MIN_DIGITS:2}
+      base-price: ${NIP05_BASE_PRICE:100}
     payment:
       lnbits:
         enabled: true

@@ -1,7 +1,7 @@
 package com.nipsr.management.payment
 
 import com.nipsr.management.model.Invoice
-import com.nipsr.management.model.InvoiceInput
+import com.nipsr.management.model.payload.InvoiceInput
 import java.time.Duration
 import java.util.*
 

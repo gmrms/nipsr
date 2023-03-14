@@ -1,8 +1,8 @@
 package com.nipsr.management.payment.providers
 
 import com.nipsr.management.model.Invoice
-import com.nipsr.management.model.InvoiceInput
-import com.nipsr.management.model.PaymentProvider
+import com.nipsr.management.model.payload.InvoiceInput
+import com.nipsr.management.model.enums.PaymentProvider
 
 interface PaymentHandler {
     suspend fun createInvoice(invoice: InvoiceInput): Invoice

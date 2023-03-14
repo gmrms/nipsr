@@ -1,8 +1,8 @@
 package com.nipsr.management.payment.providers.lnbits
 
 import com.nipsr.management.model.Invoice
-import com.nipsr.management.model.InvoiceInput
-import com.nipsr.management.model.PaymentProvider
+import com.nipsr.management.model.payload.InvoiceInput
+import com.nipsr.management.model.enums.PaymentProvider
 import com.nipsr.management.payment.providers.PaymentHandler
 import com.nipsr.management.payment.providers.lnbits.payload.LNBItsInvoice
 import io.quarkus.arc.properties.IfBuildProperty

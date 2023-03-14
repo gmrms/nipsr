@@ -1,5 +1,6 @@
 package com.nipsr.management.model
 
+import com.nipsr.management.model.enums.PaymentProvider
 import io.quarkus.mongodb.panache.common.MongoEntity
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoCompanion
 import io.quarkus.mongodb.panache.kotlin.reactive.ReactivePanacheMongoEntity

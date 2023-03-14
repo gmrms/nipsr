@@ -1,6 +1,6 @@
 package com.nipsr.management.controller
 
-import com.nipsr.management.service.RelayIngressService
+import com.nipsr.management.service.IdentifierService
 import com.nipsr.payload.nips.NIP_05
 import java.util.*
 import javax.enterprise.context.ApplicationScoped
@@ -14,14 +14,14 @@ import javax.ws.rs.core.MediaType
 @Path("/")
 @ApplicationScoped
 class NIP05Controller(
-    private val relayIngressService: RelayIngressService
+    private val identifierService: IdentifierService
 ) {
 
     @GET
     @Path("/.well-known/nostr.json")
     @Produces(MediaType.APPLICATION_JSON)
     suspend fun nip05AddressVerify(@QueryParam("name") name: String) : Map<String, Map<String, String>> {
-        val accounts = relayIngressService.findAllIngressByAddress(name)
+        val accounts = identifierService.findAllIngressByIdentifier(name)
         return mapOf(
             "names" to accounts.associate {
                 it.identifier to it.pubkey
