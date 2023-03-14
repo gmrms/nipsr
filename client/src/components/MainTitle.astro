@@ -1,0 +1,59 @@
+<div id="title" class="page">
+    <div>
+        <h1>Welcome to <span>Nipsr</span></h1>
+        <p>
+            Nipsr is a <span>free and open-source</span> set of backend applications built for and by those who want to 
+            host their own <b>relay</b> and <b>NIP-05</b> identifier provider in a <span>reliable</span>, <span>scalable</span> and <span>simple</span> maner.
+        </p>
+        <div id="actions">
+            <a href="#registration" class="accent">Get a NIP-05 id +</a>
+            <a href="https://github.com/gmrms/nipsr" target="_blank">See on Github</a>
+        </div>
+    </div>
+</div>
+
+<style>
+    #title {
+        text-align: center;
+        padding: var(--spacing) var(--spacing2x);
+		background: radial-gradient(circle, var(--medium) 0%, var(--medium-0) 50%);
+    }
+
+    #actions {
+        text-align: center;
+        padding: var(--spacing);
+        display: flex;
+        justify-content: center;
+        gap: var(--spacing);
+        color: var(--light-gray);
+    }
+
+    #actions a {
+        text-transform: uppercase;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 0.5rem 1rem;
+        border-radius: 5px;
+        color: var(--light-gray);
+        text-decoration: none;
+    }
+
+    #actions a.accent {
+        background: var(--primary-gradient);
+        color: var(--accent);
+        background-size: 200%;
+        text-decoration: none;
+        transition: all 0.5s;
+    }
+
+    #actions a.accent:hover {
+        background-position: -200px;
+    }
+
+    
+	@media (max-width: 600px) {
+		#actions {
+            flex-direction: column;
+        }
+	}
+</style>

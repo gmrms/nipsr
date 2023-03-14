@@ -6,8 +6,8 @@ services:
 
   relay:
     build:
-      context: ../relay
-      dockerfile: ../relay/src/main/docker/Dockerfile.jvm
+      context: ../server/relay
+      dockerfile: ./src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
@@ -19,8 +19,8 @@ services:
 
   processor:
     build:
-      context: ../processor
-      dockerfile: ../processor/src/main/docker/Dockerfile.jvm
+      context: ../server/processor
+      dockerfile: ./src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
@@ -32,14 +32,20 @@ services:
 
   management:
     build:
-      context: ../management
-      dockerfile: ../management/src/main/docker/Dockerfile.jvm
+      context: ../server/management
+      dockerfile: ./src/main/docker/Dockerfile.jvm
     restart: unless-stopped
     env_file:
       - env/db.env
       - env/management.env
     depends_on:
       - mongo
+
+  client:
+    build:
+      context: ../client
+      dockerfile: ./docker/Dockerfile
+    restart: unless-stopped
 
   # Other
 
