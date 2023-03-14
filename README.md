@@ -1,8 +1,34 @@
+<p align="center">
+  <img src="https://github.com/gmrms/nipsr/blob/main/client/public/favicon.svg" width="225"/>
+</p>
+
 # Nipsr
 
-This is a distributed Nostr relay implementation using [Quarkus](https://quarkus.io/) and Kotlin for the server and [Astro](https://astro.build) for the client.
+Nipsr is a distributed Nostr relay implementation using [Quarkus](https://quarkus.io/) and Kotlin for the server and [Astro](https://astro.build) for the client.
 
-## NIPs
+It aims to be eficient, scalable and simple to maintain and deploy (with docker) while also simplifying the process of running, managing and configuring an either free or paid relay.
+
+_The project is in it's early stages, so expect a lot of changes and a few bugs._
+
+## Use Nipsr
+
+### Running now
+
+- Public relay `wss://public.nipsr.com`
+- ~Private relay `wss://private.nipsr.com`~ (pending)
+- Registration page `https://nipsr.com`
+
+### NIP-05
+
+Get an identifier ~[here](https://nipsr.com)~! (coming soon)
+
+Available domains:
+- nipsr.io
+- nipsr.com
+- nipsr.com.br
+
+
+## Features
 
 - [X] NIP-01 - Basic protocol flow description
 - [X] NIP-02 - Contact List and Petnames
