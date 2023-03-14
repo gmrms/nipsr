@@ -1,4 +1,4 @@
-<div id="title">
+<div id="title" class="page">
     <div>
         <h1>Welcome to <span>Nipsr</span></h1>
         <p>
@@ -16,10 +16,7 @@
     #title {
         text-align: center;
         padding: var(--spacing) var(--spacing2x);
-		background: radial-gradient(circle, var(--medium) 0%, var(--dark) 50%);
-        height: 100vh;
-        display: flex;
-        align-items: center;
+		background: radial-gradient(circle, var(--medium) 0%, var(--medium-0) 50%);
     }
 
     #actions {
@@ -28,6 +25,7 @@
         display: flex;
         justify-content: center;
         gap: var(--spacing);
+        color: var(--light-gray);
     }
 
     #actions a {
@@ -37,10 +35,25 @@
         padding: 0.5rem 1rem;
         border-radius: 5px;
         color: var(--light-gray);
+        text-decoration: none;
     }
 
     #actions a.accent {
+        background: var(--primary-gradient);
         color: var(--accent);
-        background-color: rgba(255, 255, 255, 0.03);
+        background-size: 200%;
+        text-decoration: none;
+        transition: all 0.5s;
     }
+
+    #actions a.accent:hover {
+        background-position: -200px;
+    }
+
+    
+	@media (max-width: 600px) {
+		#actions {
+            flex-direction: column;
+        }
+	}
 </style>

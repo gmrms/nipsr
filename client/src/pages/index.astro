@@ -2,13 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 import Footer from '../components/Footer.astro';
 import MainTitle from '../components/MainTitle.astro';
-import Register from '../components/Register.astro';
+import Register from '../components/Register.svelte';
 ---
 
 <Layout title="Nipsr - Nostr platform">
 	<main>
 		<MainTitle/>
-		<Register/>
+		<Register client:load/>
 		<Footer/>
 	</main>
 </Layout>
