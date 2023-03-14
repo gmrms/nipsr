@@ -53,7 +53,10 @@ jobs:
         images: ${{ env.registry }}/${{ github.repository }}/client
 
     - name: Build with Maven
-      run: mvn -B package -Drevision=${{ steps.relay-metadata.outputs.version }}
+      run: |
+        cd server
+        mvn -B package -Drevision=${{ steps.relay-metadata.outputs.version }}
+        cd ..
       
     - name: "[Relay] - Build and push Docker images"
       uses: docker/build-push-action@v4.0.0
