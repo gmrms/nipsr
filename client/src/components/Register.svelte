@@ -3,15 +3,27 @@
     let identifierRequest = {}
 
     let calculated = false;
+    let available = false;
     let pricing = 0;
 
     function onSubmit(){
         calculated = !calculated;
     }
 
-    function calculatePricing(){
-        pricing = identifierRequest.identifier.length * 100;
-        calculated = pricing > 0
+    function fetchAvailability(identifier){
+        return fetch(`http://localhost:8080/api/identifier/${identifier}`)
+            .then(res => res.json())
+    }
+
+    async function calculatePricing(){
+        if(!identifierRequest.identifier) {
+            calculated = false
+            return
+        }
+        let availability = await fetchAvailability(identifierRequest.identifier)
+        pricing = availability.price
+        available = availability.available
+        calculated = true
     }
 
 </script>
@@ -30,7 +42,13 @@
             </select>
         </div>
         <input name="pubkey" type="text" placeholder="pubkey" minlength="32" bind:value={identifierRequest.pubkey}/>
-        <p id="availability" class:hasPricing="{calculated}">Available for <span>{pricing}</span> sats</p>
+        <p id="availability" class:hasPricing="{calculated}">
+            {#if available}
+                Available for <span>{pricing}</span> sats
+            {:else}
+                Unavailable
+            {/if}
+        </p>
         <button type="submit">SUBMIT</button>
     </form>
 </div>
