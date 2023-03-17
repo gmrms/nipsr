@@ -11,7 +11,7 @@ import javax.ws.rs.PathParam
 
 @ApplicationScoped
 @Path("/identifier")
-class RelayIngressController(
+class IdentifierController(
     private val identifierService: IdentifierService
 ) {
 

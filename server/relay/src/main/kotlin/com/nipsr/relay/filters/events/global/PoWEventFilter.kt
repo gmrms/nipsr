@@ -1,12 +1,12 @@
-package com.nipsr.relay.filters.global
+package com.nipsr.relay.filters.events.global
 
 import com.nipsr.payload.Constants.NONCE_TAG
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_13
 import com.nipsr.relay.config.NipsrRelaySettings
-import com.nipsr.relay.filters.EventFilter
-import com.nipsr.relay.filters.EventFilter.Companion.ok
-import com.nipsr.relay.filters.EventFilter.Companion.pow
+import com.nipsr.relay.filters.events.EventFilter
+import com.nipsr.relay.filters.events.EventFilter.Companion.ok
+import com.nipsr.relay.filters.events.EventFilter.Companion.pow
 import com.nipsr.relay.filters.FilterType
 import java.util.HexFormat
 import javax.enterprise.context.ApplicationScoped
@@ -18,7 +18,7 @@ class PoWEventFilter(
     private val settings: NipsrRelaySettings
 ) : EventFilter {
 
-    override fun filter(event: Event<*>) : Pair<Boolean, String?> {
+    override suspend fun filter(event: Event<*>) : Pair<Boolean, String?> {
         val target = getTargetDifficulty(event)
         if(settings.minPowRequired() > target){
             return false pow "The minimum difficulty required is ${settings.minPowRequired()} but the target was $target"

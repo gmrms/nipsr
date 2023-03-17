@@ -1,11 +1,11 @@
-package com.nipsr.relay.filters.global
+package com.nipsr.relay.filters.events.global
 
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_22
 import com.nipsr.relay.config.NipsrRelaySettings
-import com.nipsr.relay.filters.EventFilter
-import com.nipsr.relay.filters.EventFilter.Companion.invalid
-import com.nipsr.relay.filters.EventFilter.Companion.ok
+import com.nipsr.relay.filters.events.EventFilter
+import com.nipsr.relay.filters.events.EventFilter.Companion.invalid
+import com.nipsr.relay.filters.events.EventFilter.Companion.ok
 import com.nipsr.relay.filters.FilterType
 import javax.enterprise.context.ApplicationScoped
 
@@ -21,7 +21,7 @@ class CreatedAtEventFilter(
     /**
      * Returns true if the event was created within the last [NipsrRelaySettings.maxCreatedAtDriftMinutes] minutes.
      */
-    override fun filter(event: Event<*>) : Pair<Boolean, String?> {
+    override suspend fun filter(event: Event<*>) : Pair<Boolean, String?> {
         val maxCreatedAtDriftMinutes = settings.maxCreatedAtDriftMinutes()
         val createdAt = event.created_at
         val currentTimeSeconds = System.currentTimeMillis() / 1000

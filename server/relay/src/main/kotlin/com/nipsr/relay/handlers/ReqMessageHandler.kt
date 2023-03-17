@@ -45,7 +45,7 @@ class ReqMessageHandler(
         coroutineScope {
             val (subscriptionId, filters) = extractParts(messageParts)
 
-            with(sessionsContext.currentSessionInfo) {
+            with(sessionsContext.currentSession.info) {
                 val subscription = Subscription(subscriptionId, filters)
                 // If the subscription already exists, remove it and add it again to update the filters
                 if(!this.subscriptions.add(subscription)) {
@@ -55,7 +55,7 @@ class ReqMessageHandler(
                 for(filter in filters){
                     launch(Dispatchers.IO) {
                         try {
-                            broadcastEvents(filter, subscription, sessionsContext.currentSession)
+                            broadcastEvents(filter, subscription, sessionsContext.currentSession.session)
                         } catch (e: Exception) {
                             throw RelayException("Error while fetching events for subscription: $subscriptionId", e)
                         }

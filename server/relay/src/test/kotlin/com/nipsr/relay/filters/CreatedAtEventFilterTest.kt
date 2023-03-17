@@ -3,15 +3,18 @@ package com.nipsr.relay.filters
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_22
 import com.nipsr.relay.config.NipsrRelaySettings
-import com.nipsr.relay.filters.global.CreatedAtEventFilter
+import com.nipsr.relay.filters.events.global.CreatedAtEventFilter
 import io.mockk.every
 import io.mockk.mockk
 import io.mockk.spyk
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 
 @NIP_22
+@OptIn(ExperimentalCoroutinesApi::class)
 class CreatedAtEventFilterTest {
 
     val maxCreatedAtDriftMinutes = 5
@@ -22,14 +25,14 @@ class CreatedAtEventFilterTest {
     val createdAtEventFilter = spyk(CreatedAtEventFilter(settings))
 
     @Test
-    fun `should allow events with created_at within params`(){
+    fun `should allow events with created_at within params`() = runTest {
         every { event.created_at } returns System.currentTimeMillis()
         val (result, _) = createdAtEventFilter.filter(event)
         assertTrue(result)
     }
 
     @Test
-    fun `should not allow events with created_at outside params`(){
+    fun `should not allow events with created_at outside params`() = runTest {
         every { event.created_at } returns System.currentTimeMillis() / 1000 - 60 * (maxCreatedAtDriftMinutes + 1)
         val (result, _) = createdAtEventFilter.filter(event)
         assertFalse(result)
