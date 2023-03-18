@@ -20,6 +20,9 @@ class PoWEventFilter(
 
     override suspend fun filter(event: Event<*>) : Pair<Boolean, String?> {
         val target = getTargetDifficulty(event)
+        if(target == 0){
+            return ok()
+        }
         if(settings.minPowRequired() > target){
             return false pow "The minimum difficulty required is ${settings.minPowRequired()} but the target was $target"
         }

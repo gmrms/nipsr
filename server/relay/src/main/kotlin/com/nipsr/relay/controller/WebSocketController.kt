@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory
 @ServerEndpoint("/")
 class WebSocketController(
     private val settings: NipsrRelaySettings,
-    private val messageFilters: Instance<MessageFilter>,
+    messageFilters: Instance<MessageFilter>,
     messageHandlers: Instance<MessageHandler>,
 ) {
 
@@ -46,6 +46,7 @@ class WebSocketController(
 
     private val messageReader = objectMapper.readerForListOf(Any::class.java)
     private val handlersGroupedByMessageType = messageHandlers.groupBy { it.handlesType() }
+    private val orderedMessageFilters = messageFilters.sortedBy { it.order() }
 
     private val sessions = ConcurrentHashMap<Session, SessionInfo>()
 
@@ -70,7 +71,10 @@ class WebSocketController(
     @Counted(name = "GLOBAL-totalErrors", unit = MetricUnits.HOURS)
     fun onError(session: Session, throwable: Throwable) {
         when(throwable){
-            is TerminateConnectionException -> session.close()
+            is TerminateConnectionException -> {
+                session.send(throwable.asNotice())
+                session.close()
+            }
             is EventErrorException -> session.sendResult(throwable)
             is MessageException -> session.send(throwable.asNotice())
             else -> {
@@ -88,7 +92,7 @@ class WebSocketController(
         val messageType = MessageType.valueOf(message[0] as String)
         val handlers = handlersGroupedByMessageType[messageType] ?: return@runBlocking
         val context = context(sessions[session]!!, session)
-        for(filter in messageFilters){
+        for(filter in orderedMessageFilters){
             if(filter.handlesType(messageType)){
                 filter.filter(Message(message), context)
             }

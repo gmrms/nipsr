@@ -8,7 +8,7 @@ import com.nipsr.relay.model.SessionsContext
 /**
  * A message filter is used to filter messages sent by clients.
  */
-interface MessageFilter {
+interface MessageFilter : Comparable<MessageFilter> {
 
     /**
      * Returns true if the message should be allowed should be processed by the server.
@@ -22,5 +22,11 @@ interface MessageFilter {
     fun type(): FilterType
 
     fun handlesType(messageType: MessageType): Boolean
+
+    fun order(): Int = 0
+
+    override fun compareTo(other: MessageFilter): Int {
+        return order().compareTo(other.order())
+    }
 
 }

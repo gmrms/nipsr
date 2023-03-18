@@ -3,6 +3,7 @@ package com.nipsr.relay.listener
 import com.nipsr.payload.nips.NIP_05
 import com.nipsr.relay.service.AccessService
 import io.quarkus.arc.properties.IfBuildProperty
+import io.vertx.core.json.JsonObject
 import javax.enterprise.context.ApplicationScoped
 import org.eclipse.microprofile.reactive.messaging.Incoming
 
@@ -14,18 +15,20 @@ class IdentifierCreatedListener(
 ) {
 
     @Incoming("identifier-created")
-    suspend fun created(message: IdentifierMessage) {
-        accessService.grantAccess(message.pubkey, message.expiration)
+    suspend fun created(message: JsonObject) {
+        val identifierMessage = message.mapTo(IdentifierMessage::class.java)
+        accessService.grantAccess(identifierMessage.pubkey, identifierMessage.expiration)
     }
 
     @Incoming("identifier-deleted")
-    suspend fun deleted(message: IdentifierMessage) {
-        accessService.revoke(message.pubkey)
+    suspend fun deleted(message: JsonObject) {
+        val identifierMessage = message.mapTo(IdentifierMessage::class.java)
+        accessService.revoke(identifierMessage.pubkey)
     }
 
-    data class IdentifierMessage(
-        val pubkey: String,
-        val expiration: Long = 0
-    )
+    class IdentifierMessage {
+        lateinit var pubkey: String
+        var expiration: Long = 0
+    }
 
 }

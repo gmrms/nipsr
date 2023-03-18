@@ -15,9 +15,9 @@ import org.eclipse.microprofile.reactive.messaging.Emitter
 @ApplicationScoped
 class IdentifierService(
     @Channel("identifier-created")
-    private val createdEmmiter: Emitter<IdentifierMessage>,
+    private val createdEmitter: Emitter<IdentifierMessage>,
     @Channel("identifier-deleted")
-    private val deletedEmmiter: Emitter<IdentifierMessage>,
+    private val deletedEmitter: Emitter<IdentifierMessage>,
     private val paymentService: PaymentService,
     private val niP05Config: NIP05Config,
 ) {
@@ -26,14 +26,18 @@ class IdentifierService(
         const val DEFAULT_IDENTIFIER_DURATION = Long.MAX_VALUE
     }
 
-    suspend fun create(pubkey: String, identifier: String) = Identifier.persist(
-        Identifier().apply {
-            this.pubkey = pubkey
-            this.identifier = identifier
-            this.expiration = DEFAULT_IDENTIFIER_DURATION
+    suspend fun create(pubkey: String, identifier: String) {
+        if(!isAvailable(identifier)) {
+            throw BadRequestException("Identifier already taken.")
         }
-    ).awaitSuspending().also {
-        createdEmmiter.send(IdentifierMessage(pubkey, DEFAULT_IDENTIFIER_DURATION))
+        Identifier.persist(
+            Identifier().apply {
+                this.pubkey = pubkey
+                this.identifier = identifier
+                this.expiration = DEFAULT_IDENTIFIER_DURATION
+            }
+        )
+        createdEmitter.send(IdentifierMessage(pubkey, DEFAULT_IDENTIFIER_DURATION))
     }
 
     suspend fun delete(identifier: String) {
@@ -44,7 +48,7 @@ class IdentifierService(
 
         Identifier.deleteById(ident.id!!).awaitSuspending()
         if(allOfPubkey.size - 1 <= 0){
-            deletedEmmiter.send(IdentifierMessage(ident.pubkey))
+            deletedEmitter.send(IdentifierMessage(ident.pubkey))
         }
     }
 
@@ -60,10 +64,10 @@ class IdentifierService(
 
     suspend fun requestAddress(pubkey: String, identifier: String): Invoice {
         if(niP05Config.minDigits() > identifier.length){
-            throw BadRequestException("Address too short. The minimum length is ${niP05Config.minDigits()}.")
+            throw BadRequestException("Identifier too short. The minimum length is ${niP05Config.minDigits()}.")
         }
         if(!isAvailable(identifier)){
-            throw BadRequestException("Address already taken.")
+            throw BadRequestException("Identifier already taken.")
         }
         val invoiceInput = InvoiceInput(
             pubkey = pubkey,

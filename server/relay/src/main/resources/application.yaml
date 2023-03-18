@@ -25,7 +25,6 @@ quarkus:
           admin: ${NIPSR_ADMIN_PASSWORD:admin}
         roles:
           admin: admin
-
 mp:
   messaging:
     outgoing:
@@ -62,5 +61,5 @@ nipsr:
       require-authentication: ${NIPSR_RELAY_REQUIRE_AUTHENTICATION:false}
       grant-access-nip05: ${NIPSR_RELAY_GRANT_ACCESS_NIP05:true}
       private:
-        enabled: ${NIPSR_RELAY_PRIVATE:false}
+        enabled: ${NIPSR_RELAY_PRIVATE:true}
         allow-public-reads: ${NIPSR_RELAY_PRIVATE_ALLOW_PUBLIC_READS:true}

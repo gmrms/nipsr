@@ -26,17 +26,20 @@ class AllowAccessMessageFilter(
 ) : MessageFilter {
 
     override suspend fun filter(message: Message, sessionContext: SessionsContext) {
-        if(!nipsrRelaySettings.requireAuthentication() || sessionContext.currentSession.info.auth.authenticated){
-            if(!accessService.hasAccess(sessionContext.currentSession.info.auth.pubkey!!)){
-                throw RelayAccessDeniedException("Access denied")
+        val authenticated = sessionContext.currentSession.info.auth.authenticated
+        val messageType = MessageType.valueOf(message.first() as String)
+        when(messageType){
+            MessageType.EVENT -> {
+                if(!nipsrRelaySettings.requireAuthentication() || authenticated){
+                    if(!accessService.hasAccess(sessionContext.currentSession.info.auth.pubkey!!)){
+                        throw RelayAccessDeniedException("Access denied")
+                    }
+                }
             }
-        } else {
-            if(nipsrRelaySettings.private().allowPublicReads()){
-                if(message.first() == MessageType.EVENT){
+            else -> {
+                if(!nipsrRelaySettings.private().allowPublicReads() && !authenticated) {
                     throw RelayAccessDeniedException("Unauthenticated users cannot send events")
                 }
-            } else {
-                throw RelayAccessDeniedException("You must be authenticated to send messages")
             }
         }
     }
