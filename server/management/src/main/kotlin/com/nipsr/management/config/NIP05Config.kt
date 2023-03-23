@@ -6,4 +6,5 @@ import io.smallrye.config.ConfigMapping
 interface NIP05Config {
     fun minDigits(): Int
     fun basePrice(): Long
+    fun domains(): List<String>
 }

@@ -2,6 +2,7 @@ package com.nipsr.management.service
 
 import com.nipsr.management.config.NIP05Config
 import com.nipsr.management.model.Identifier
+import com.nipsr.management.model.IdentifierRequest
 import com.nipsr.management.model.Invoice
 import com.nipsr.management.model.payload.AvailabilityResponse
 import com.nipsr.management.model.payload.InvoiceInput
@@ -24,10 +25,11 @@ class IdentifierService(
 
     companion object {
         const val DEFAULT_IDENTIFIER_DURATION = Long.MAX_VALUE
+        val DEFAULT_INVOICE_DURATION = Duration.ofMinutes(5)
     }
 
-    suspend fun create(pubkey: String, identifier: String) {
-        if(!isAvailable(identifier)) {
+    suspend fun create(pubkey: String, identifier: String, domain: String) {
+        if(!isAvailable(identifier, domain)) {
             throw BadRequestException("Identifier already taken.")
         }
         Identifier.persist(
@@ -35,8 +37,9 @@ class IdentifierService(
                 this.pubkey = pubkey
                 this.identifier = identifier
                 this.expiration = DEFAULT_IDENTIFIER_DURATION
+                this.domain = domain
             }
-        )
+        ).awaitSuspending()
         createdEmitter.send(IdentifierMessage(pubkey, DEFAULT_IDENTIFIER_DURATION))
     }
 
@@ -53,28 +56,36 @@ class IdentifierService(
     }
 
 
-    suspend fun findAllIngressByIdentifier(identifier: String) = Identifier.findAllByIdentifier(identifier)
+    suspend fun findAllIngressByIdentifierAndDomain(identifier: String, domain: String) =
+        Identifier.findAllByIdentifierAndDomain(identifier, domain)
 
-    suspend fun checkAvailability(identifier: String) = AvailabilityResponse(
-        isAvailable(identifier),
+    suspend fun checkAvailability(identifier: String, domain: String) = AvailabilityResponse(
+        isAvailable(identifier, domain),
         getPrice(identifier)
     )
 
-    private suspend fun isAvailable(identifier: String) = !Identifier.existsByIdentifier(identifier)
+    private suspend fun isAvailable(identifier: String, domain: String) =
+        !Identifier.existsByIdentifierDomain(identifier, domain)
 
-    suspend fun requestAddress(pubkey: String, identifier: String): Invoice {
+    suspend fun requestAddress(identifierRequest: IdentifierRequest): Invoice {
+        val identifier = identifierRequest.identifier
+        val domain = identifierRequest.domain
         if(niP05Config.minDigits() > identifier.length){
             throw BadRequestException("Identifier too short. The minimum length is ${niP05Config.minDigits()}.")
         }
-        if(!isAvailable(identifier)){
+        if(!niP05Config.domains().contains(domain)){
+            throw BadRequestException("This domain is unavailable for registration. The allowed domains are ${niP05Config.domains()}.")
+        }
+        if(!isAvailable(identifier, domain)){
             throw BadRequestException("Identifier already taken.")
         }
         val invoiceInput = InvoiceInput(
-            pubkey = pubkey,
+            pubkey = identifierRequest.pubkey,
             amount = getPrice(identifier),
-            duration = Duration.ofDays(1),
-            memo = "NIP-05 - $identifier",
-            identifier = identifier
+            duration = DEFAULT_INVOICE_DURATION,
+            identifier = identifier,
+            memo = "NIP-05 - ${identifier}@${domain}",
+            domain = domain
         )
         return paymentService.createInvoice(invoiceInput)
     }

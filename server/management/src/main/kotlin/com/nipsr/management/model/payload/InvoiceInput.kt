@@ -7,5 +7,6 @@ data class InvoiceInput(
     val amount: Long,
     val duration: Duration,
     val memo: String,
-    val identifier: String
+    val identifier: String,
+    val domain: String
 )

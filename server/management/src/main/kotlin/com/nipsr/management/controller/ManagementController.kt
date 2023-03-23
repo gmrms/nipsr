@@ -22,7 +22,7 @@ class ManagementController(
 
     @POST
     suspend fun add(identifier: Identifier) =
-        identifierService.create(identifier.pubkey, identifier.identifier)
+        identifierService.create(identifier.pubkey, identifier.identifier, identifier.domain)
 
     @DELETE
     @Path("/{identifier}")

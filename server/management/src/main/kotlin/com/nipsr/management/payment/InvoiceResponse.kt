@@ -14,6 +14,7 @@ abstract class InvoiceResponse {
         this.pubkey = input.pubkey
         this.memo = input.memo
         this.identifier = input.identifier
+        this.domain = input.domain
         this.expiration = input.duration.secondsFromNow()
         this.data = payment_request
         this.externalId = checking_id
