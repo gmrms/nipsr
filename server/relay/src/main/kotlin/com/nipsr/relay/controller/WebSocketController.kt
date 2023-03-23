@@ -5,12 +5,16 @@ import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_20
 import com.nipsr.relay.config.NipsrRelaySettings
 import com.nipsr.relay.exeptions.EventErrorException
+import com.nipsr.relay.exeptions.MessageException
+import com.nipsr.relay.exeptions.TerminateConnectionException
+import com.nipsr.relay.filters.messages.MessageFilter
 import com.nipsr.relay.handlers.spec.MessageHandler
 import com.nipsr.relay.message.Message
 import com.nipsr.relay.message.MessageType
 import com.nipsr.relay.message.SessionMessageExtension.asNotice
 import com.nipsr.relay.message.SessionMessageExtension.send
 import com.nipsr.relay.message.SessionMessageExtension.sendResult
+import com.nipsr.relay.model.SessionData
 import com.nipsr.relay.model.SessionInfo
 import com.nipsr.relay.model.SessionsContext
 import java.util.concurrent.ConcurrentHashMap
@@ -34,13 +38,15 @@ import org.slf4j.LoggerFactory
 @ServerEndpoint("/")
 class WebSocketController(
     private val settings: NipsrRelaySettings,
-    messageHandlers: Instance<MessageHandler>
+    messageFilters: Instance<MessageFilter>,
+    messageHandlers: Instance<MessageHandler>,
 ) {
 
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     private val messageReader = objectMapper.readerForListOf(Any::class.java)
     private val handlersGroupedByMessageType = messageHandlers.groupBy { it.handlesType() }
+    private val orderedMessageFilters = messageFilters.sortedBy { it.order() }
 
     private val sessions = ConcurrentHashMap<Session, SessionInfo>()
 
@@ -60,34 +66,48 @@ class WebSocketController(
         session.close()
     }
 
-    @OnError
     @NIP_20
+    @OnError
+    @Counted(name = "GLOBAL-totalErrors", unit = MetricUnits.HOURS)
     fun onError(session: Session, throwable: Throwable) {
-        if(throwable is EventErrorException){
-            session.sendResult(throwable)
-        } else {
-            logger.error("Error while processing message", throwable)
-            session.send(throwable.asNotice())
+        when(throwable){
+            is TerminateConnectionException -> {
+                session.send(throwable.asNotice())
+                session.close()
+            }
+            is EventErrorException -> session.sendResult(throwable)
+            is MessageException -> session.send(throwable.asNotice())
+            else -> {
+                logger.error("Error while processing message", throwable)
+                session.send(throwable.asNotice())
+            }
         }
     }
 
     @OnMessage
     @Counted(name = "GLOBAL-totalMessages", unit = MetricUnits.HOURS)
     @Timed(name = "GLOBAL-messageProcessingDuration", unit = MetricUnits.MILLISECONDS)
-    fun onMessage(session: Session, message: String) = runBlocking {
-        val event = messageReader.readValue<List<Any>>(message)
-        val messageType = MessageType.valueOf(event[0] as String)
+    fun onMessage(session: Session, raw: String) = runBlocking {
+        val message = messageReader.readValue<List<Any>>(raw)
+        val messageType = MessageType.valueOf(message[0] as String)
         val handlers = handlersGroupedByMessageType[messageType] ?: return@runBlocking
+        val context = context(sessions[session]!!, session)
+        for(filter in orderedMessageFilters){
+            if(filter.handlesType(messageType)){
+                filter.filter(Message(message), context)
+            }
+        }
         for(handler in handlers){
-            handler.handle(
-                context(sessions[session]!!, session), event
-            )
+            handler.handle(context, message)
         }
     }
 
     @Gauge(name = "GLOBAL-activeSessions", unit = MetricUnits.NONE)
     fun currentActiveSessions() = sessions.size
 
-    fun context(info: SessionInfo, session: Session) = SessionsContext(info, session, sessions)
+    fun context(info: SessionInfo, session: Session) = SessionsContext(
+        SessionData(session, info),
+        sessions
+    )
 
 }

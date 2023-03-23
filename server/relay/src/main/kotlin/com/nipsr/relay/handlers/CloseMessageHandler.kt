@@ -24,7 +24,7 @@ class CloseMessageHandler : MessageHandler {
     @Counted(name = "CLOSE-TotalMessages", unit = MetricUnits.HOURS)
     @Timed(name = "CLOSE-MessageProcessingDuration", unit = MetricUnits.MILLISECONDS)
     override suspend fun handleMessage(sessionsContext: SessionsContext, messageParts: MessageParts) {
-        with(sessionsContext.currentSessionInfo) {
+        with(sessionsContext.currentSession.info) {
             this.subscriptions.remove(
                 Subscription(messageParts[spec(SUBSCRIPTION_ID)].first() as String)
             )

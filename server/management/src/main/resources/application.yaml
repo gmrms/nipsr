@@ -9,19 +9,44 @@ quarkus:
       exposed-headers: accept,content-type
       access-control-max-age: 24H
       access-control-allow-credentials: false
+    auth:
+      basic: true
   mongodb:
     database: ${MONGODB_DATABASE:nipsr}
     connection-string: ${MONGODB_CONNECTION_STRING:mongodb://nipsr:nipsr@localhost:27017}
   rest-client:
     lnbits:
       url: ${LNBITS_API_URL:https://legend.lnbits.com/api/v1}
+  security:
+    users:
+      embedded:
+        enabled: true
+        plain-text: true
+        users:
+          admin: ${NIPSR_ADMIN_PASSWORD:admin}
+        roles:
+          admin: admin
+
+rabbitmq-host: ${RABBITMQ_HOST:localhost}
+rabbitmq-port: ${RABBITMQ_PORT:5672}
+rabbitmq-username: ${RABBITMQ_USER:nipsr}
+rabbitmq-password: ${RABBITMQ_PASS:nipsr}
+
+mp:
+  messaging:
+    outgoing:
+      identifier-created:
+        connector: smallrye-rabbitmq
+      identifier-deleted:
+        connector: smallrye-rabbitmq
 
 nipsr:
   management:
     nip05:
       min-digits: ${NIP05_MIN_DIGITS:2}
       base-price: ${NIP05_BASE_PRICE:100}
+      domains: ${NIP05_DOMAINS:nipsr.com,nipsr.io,nipsr.com.br}
     payment:
       lnbits:
         enabled: true
-        api-key: ${LNBITS_API_KEY}
+        api-key: ${LNBITS_API_KEY:your-api-key}

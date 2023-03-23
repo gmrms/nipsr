@@ -3,16 +3,19 @@ package com.nipsr.relay.filters
 import com.nipsr.payload.model.Filter
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.TestEvents
-import com.nipsr.relay.filters.user.UserEventFilter
+import com.nipsr.relay.filters.events.user.UserEventFilter
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.Test
 
 @NIP_01
+@OptIn(ExperimentalCoroutinesApi::class)
 class UserEventFilterTest {
 
     val events = TestEvents.validEvents
 
     @Test
-    fun `should allow filters of pubkey and id by prefix`() {
+    fun `should allow filters of pubkey and id by prefix`() = runTest {
         val ids = events.map { it.id.substring(0, 24) }
         val authors = events.map { it.pubkey.substring(0, 24) }
         val filter = Filter(
@@ -25,7 +28,7 @@ class UserEventFilterTest {
     }
 
     @Test
-    fun `should not allow filters of pubkey and id by prefixes that do not exist`() {
+    fun `should not allow filters of pubkey and id by prefixes that do not exist`() = runTest {
         val ids = events.map { it.id.substring(24) }
         val authors = events.map { it.pubkey.substring(24) }
         val filter = Filter(
@@ -38,7 +41,7 @@ class UserEventFilterTest {
     }
 
     @Test
-    fun `should filter events by kinds`() {
+    fun `should filter events by kinds`() = runTest {
         val kinds = arrayListOf(1, 2, 3)
         for(kind in kinds) {
             val filter = Filter(
@@ -55,7 +58,7 @@ class UserEventFilterTest {
     }
 
     @Test
-    fun `should filter events by tags`(){
+    fun `should filter events by tags`() = runTest {
         val filter = Filter(
             tags = arrayListOf(
                 arrayListOf("p", "13409737c571a3fc923faa407935287e440b1d5a1f64a75c87bed37a4f1b74ab"),
@@ -72,7 +75,7 @@ class UserEventFilterTest {
     }
 
     @Test
-    fun `should filter events with multiple filters`(){
+    fun `should filter events with multiple filters`() = runTest {
         val filters = arrayListOf(
             Filter(
                 since = 10000,

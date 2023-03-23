@@ -9,10 +9,10 @@ import com.nipsr.payload.nips.NIP_01
 import com.nipsr.payload.nips.NIP_20
 import com.nipsr.relay.exeptions.EventErrorException
 import com.nipsr.relay.exeptions.RelayException
-import com.nipsr.relay.filters.EventFilter
+import com.nipsr.relay.filters.events.EventFilter
 import com.nipsr.relay.filters.FilterType
-import com.nipsr.relay.filters.user.AllowNoneEventFilter
-import com.nipsr.relay.filters.user.UserEventFilter
+import com.nipsr.relay.filters.events.user.AllowNoneEventFilter
+import com.nipsr.relay.filters.events.user.UserEventFilter
 import com.nipsr.relay.handlers.spec.MessageHandler
 import com.nipsr.relay.handlers.spec.MessageParts
 import com.nipsr.relay.handlers.spec.MessageSpec
@@ -51,11 +51,14 @@ class EventMessageHandler(
     @Timed(name = "EVENT-MessageProcessingDuration", unit = MetricUnits.MILLISECONDS)
     override suspend fun handleMessage(sessionsContext: SessionsContext, messageParts: MessageParts) {
         val event = messageParts.getAndConvert(spec(EVENT), ::convertEvent)
+
         applyGlobalFilters(event)
         validate(event)
         sendEvent(event)
+
         @NIP_20
-        sessionsContext.currentSession.sendResult(event)
+        sessionsContext.currentSession.session.sendResult(event)
+
         broadcast(sessionsContext, event)
     }
 
@@ -79,7 +82,7 @@ class EventMessageHandler(
         }
     }
 
-    private fun applyGlobalFilters(event: Event<*>) {
+    private suspend fun applyGlobalFilters(event: Event<*>) {
         val globalFilters = filtersGroupedByType[FilterType.GLOBAL] ?: arrayListOf()
         for(globalFilter in globalFilters){
             val (result, message) = globalFilter.filter(event)
@@ -89,7 +92,7 @@ class EventMessageHandler(
         }
     }
 
-    private fun broadcast(sessionsContext: SessionsContext, event: Event<*>) {
+    private suspend fun broadcast(sessionsContext: SessionsContext, event: Event<*>) {
         for((session, info) in sessionsContext.sessions){
             if(info.subscriptions.isEmpty()){
                 continue

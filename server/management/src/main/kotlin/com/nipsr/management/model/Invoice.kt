@@ -12,6 +12,7 @@ class Invoice : ReactivePanacheMongoEntity() {
     lateinit var memo: String
     lateinit var pubkey: String
     lateinit var identifier: String
+    lateinit var domain: String
     lateinit var externalId: String
     lateinit var data: String
     lateinit var paymentProvider: PaymentProvider

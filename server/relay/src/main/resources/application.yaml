@@ -9,15 +9,36 @@ quarkus:
       exposed-headers: accept,content-type
       access-control-max-age: 24H
       access-control-allow-credentials: false
+    auth:
+      basic: true
   mongodb:
     database: ${MONGODB_DATABASE:nipsr}
     connection-string: ${MONGODB_CONNECTION_STRING:mongodb://nipsr:nipsr@localhost:27017}
-
+  redis:
+    hosts: ${REDIS_HOST:redis://localhost:6379}
+  security:
+    users:
+      embedded:
+        enabled: true
+        plain-text: true
+        users:
+          admin: ${NIPSR_ADMIN_PASSWORD:admin}
+        roles:
+          admin: admin
 mp:
   messaging:
     outgoing:
       events:
         connector: smallrye-rabbitmq
+    incoming:
+      identifier-created:
+        connector: smallrye-rabbitmq
+        queue:
+          name: identifier-created
+      identifier-deleted:
+        connector: smallrye-rabbitmq
+        queue:
+          name: identifier-deleted
 
 rabbitmq-host: ${RABBITMQ_HOST:localhost}
 rabbitmq-port: ${RABBITMQ_PORT:5672}
@@ -35,8 +56,10 @@ nipsr:
     supported-nips: 1,2,9,11,12,13,15,16,20,22
     settings:
       max-connections: ${NIPSR_RELAY_MAX_CONNECTIONS:300}
-      # 26 hours is the biggest time zone difference that exists
-      # UTC+14:00 to UTC-12:00
-      # Plus 15 minutes to be safe
       max-created-at-drift-minutes: ${NIPSR_RELAY_MAX_CREATED_AT_DRIFT_MINUTES:1575}
       min-pow-required: ${NIPSR_RELAY_MIN_POW_REQUIRED:0}
+      require-authentication: ${NIPSR_RELAY_REQUIRE_AUTHENTICATION:false}
+      grant-access-nip05: ${NIPSR_RELAY_GRANT_ACCESS_NIP05:true}
+      private:
+        enabled: ${NIPSR_RELAY_PRIVATE:true}
+        allow-public-reads: ${NIPSR_RELAY_PRIVATE_ALLOW_PUBLIC_READS:true}

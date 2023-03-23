@@ -1,7 +1,8 @@
-package com.nipsr.relay.filters
+package com.nipsr.relay.filters.events
 
 import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_20
+import com.nipsr.relay.filters.FilterType
 
 /**
  * An event filter is used to filter events that are sent by and to a client.
@@ -11,7 +12,7 @@ interface EventFilter {
     /**
      * Returns true if the event should be allowed to be sent to the client.
      */
-    fun filter(event: Event<*>): Pair<Boolean, String?>
+    suspend fun filter(event: Event<*>): Pair<Boolean, String?>
 
     /**
      * Returns the type of the filter.

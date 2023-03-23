@@ -5,7 +5,7 @@ import com.nipsr.payload.model.events.Event
 import com.nipsr.payload.nips.NIP_01
 import com.nipsr.relay.TestContexts.defaultSessionsContext
 import com.nipsr.relay.TestEvents
-import com.nipsr.relay.filters.EventFilter
+import com.nipsr.relay.filters.events.EventFilter
 import com.nipsr.relay.handlers.spec.MessageParts
 import com.nipsr.relay.validation.EventValidator
 import io.mockk.coVerify
