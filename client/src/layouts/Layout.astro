@@ -83,6 +83,10 @@ const { title } = Astro.props;
 		color: var(--accent)
 	}
 
+	span.regular {
+		color: var(--accent-2);
+	}
+
 	.page {
         height: 100vh;
         display: flex;
@@ -108,4 +112,9 @@ const { title } = Astro.props;
 			font-size: 3rem;
 		}
 	}
+
+    .qrcode {
+        max-width: 100%;
+		border-radius: 20px;
+    }
 </style>
