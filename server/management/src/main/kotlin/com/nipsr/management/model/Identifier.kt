@@ -20,6 +20,8 @@ class Identifier : ReactivePanacheMongoEntity() {
 
         suspend fun findAllByIdentifierAndDomain(identifier: String, domain: String) =
             find("identifier = ?1 and domain = ?2", identifier, domain).list().awaitSuspending()
+
+        suspend fun countByPubkey(pubkey: String) = count("pubkey", pubkey).awaitSuspending()
     }
 
 }

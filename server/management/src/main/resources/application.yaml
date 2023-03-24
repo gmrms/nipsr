@@ -43,9 +43,11 @@ mp:
 nipsr:
   management:
     nip05:
-      min-digits: ${NIP05_MIN_DIGITS:2}
+      allowed-by-pubkey: ${NIP05_ALLOWED_BY_PUBKEY:2}
+      min-digits: ${NIP05_MIN_DIGITS:3}
+      max-digits: ${NIP05_MAX_DIGITS:32}
       base-price: ${NIP05_BASE_PRICE:100}
-      domains: ${NIP05_DOMAINS:nipsr.com,nipsr.io,nipsr.com.br}
+      domains: ${NIP05_DOMAINS:nipsr.io,nipsr.com,nipsr.com.br}
     payment:
       lnbits:
         enabled: true

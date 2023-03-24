@@ -28,10 +28,11 @@ class IdentifierService(
         val DEFAULT_INVOICE_DURATION = Duration.ofMinutes(5)
     }
 
-    suspend fun create(pubkey: String, identifier: String, domain: String) {
-        if(!isAvailable(identifier, domain)) {
-            throw BadRequestException("Identifier already taken.")
-        }
+    suspend fun create(identifierRequest: IdentifierRequest) {
+        validate(identifierRequest)
+        val identifier = identifierRequest.identifier
+        val domain = identifierRequest.domain
+        val pubkey = identifierRequest.pubkey
         Identifier.persist(
             Identifier().apply {
                 this.pubkey = pubkey
@@ -55,7 +56,6 @@ class IdentifierService(
         }
     }
 
-
     suspend fun findAllIngressByIdentifierAndDomain(identifier: String, domain: String) =
         Identifier.findAllByIdentifierAndDomain(identifier, domain)
 
@@ -67,18 +67,13 @@ class IdentifierService(
     private suspend fun isAvailable(identifier: String, domain: String) =
         !Identifier.existsByIdentifierDomain(identifier, domain)
 
+    private suspend fun hasReachedPubkeyLimit(pubkey: String) =
+        Identifier.countByPubkey(pubkey) >= niP05Config.allowedByPubkey()
+
     suspend fun requestAddress(identifierRequest: IdentifierRequest): Invoice {
+        validate(identifierRequest)
         val identifier = identifierRequest.identifier
         val domain = identifierRequest.domain
-        if(niP05Config.minDigits() > identifier.length){
-            throw BadRequestException("Identifier too short. The minimum length is ${niP05Config.minDigits()}.")
-        }
-        if(!niP05Config.domains().contains(domain)){
-            throw BadRequestException("This domain is unavailable for registration. The allowed domains are ${niP05Config.domains()}.")
-        }
-        if(!isAvailable(identifier, domain)){
-            throw BadRequestException("Identifier already taken.")
-        }
         val invoiceInput = InvoiceInput(
             pubkey = identifierRequest.pubkey,
             amount = getPrice(identifier),
@@ -88,6 +83,29 @@ class IdentifierService(
             domain = domain
         )
         return paymentService.createInvoice(invoiceInput)
+    }
+
+    private suspend fun validate(identifierRequest: IdentifierRequest) {
+        val identifier = identifierRequest.identifier
+        val domain = identifierRequest.domain
+        if(niP05Config.minDigits() > identifier.length || identifier.length > niP05Config.maxDigits()){
+            throw BadRequestException("Identifier must be between ${niP05Config.minDigits()} and ${niP05Config.maxDigits()} characters long.")
+        }
+        if(!niP05Config.domains().contains(domain)){
+            throw BadRequestException("This domain is unavailable for registration. The allowed domains are ${niP05Config.domains()}.")
+        }
+        if(identifier.length != 64 || !identifier.matches(Regex("[0-9a-f]+"))){
+            throw BadRequestException("Identifier must be a 32 bit hex string.")
+        }
+        if(!identifier.matches(Regex("[0-9a-z_.-]+"))){
+            throw BadRequestException("Invalid identifier. It must contain only alphanumeric characters or the symbols . - _")
+        }
+        if(hasReachedPubkeyLimit(identifierRequest.pubkey)){
+            throw BadRequestException("You have reached the maximum number of identifiers allowed for this pubkey.")
+        }
+        if(!isAvailable(identifier, domain)){
+            throw BadRequestException("Identifier already taken.")
+        }
     }
 
     private fun getPrice(identifier: String) =

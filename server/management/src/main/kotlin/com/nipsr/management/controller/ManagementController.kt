@@ -1,6 +1,7 @@
 package com.nipsr.management.controller
 
 import com.nipsr.management.model.Identifier
+import com.nipsr.management.model.IdentifierRequest
 import com.nipsr.management.service.IdentifierService
 import javax.annotation.security.RolesAllowed
 import javax.enterprise.context.ApplicationScoped
@@ -21,8 +22,8 @@ class ManagementController(
     fun listAll() = Identifier.streamAll()
 
     @POST
-    suspend fun add(identifier: Identifier) =
-        identifierService.create(identifier.pubkey, identifier.identifier, identifier.domain)
+    suspend fun add(identifierRequest: IdentifierRequest) =
+        identifierService.create(identifierRequest)
 
     @DELETE
     @Path("/{identifier}")

@@ -1,7 +1,13 @@
 package com.nipsr.management.model
 
 data class IdentifierRequest(
-    val pubkey: String,
-    val identifier: String,
-    val domain: String
-)
+    var pubkey: String,
+    var identifier: String,
+    var domain: String
+) {
+    init {
+        identifier = identifier.lowercase()
+        domain = domain.lowercase()
+        pubkey = pubkey.lowercase()
+    }
+}
