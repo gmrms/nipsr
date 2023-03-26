@@ -1,5 +1,6 @@
 package com.nipsr.management.service
 
+import com.nipsr.management.model.IdentifierRequest
 import com.nipsr.management.model.Invoice
 import com.nipsr.management.model.payload.InvoiceInput
 import com.nipsr.management.payment.providers.PaymentHandler
@@ -40,11 +41,11 @@ class PaymentService(
 
     private suspend fun onPaymentSuccess(invoice: Invoice){
         identifierService.create(
-            invoice.pubkey, invoice.identifier, invoice.domain
+            IdentifierRequest(invoice.pubkey, invoice.identifier, invoice.domain)
         )
     }
 
-    @Scheduled(every = "5s")
+    @Scheduled(every = "30s")
     suspend fun checkInvoice() {
         val notPaidInvoices = Invoice.findAllNotPaid()
         for(invoice in notPaidInvoices){
