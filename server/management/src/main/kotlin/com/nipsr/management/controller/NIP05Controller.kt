@@ -30,9 +30,9 @@ class NIP05Controller(
         @Context headers: HttpHeaders
     ) : Map<String, Map<String, String>> {
         val host = headers.getHeaderString("Host")
-        logger.info("NIP05 address verify for $name@$host")
+        logger.debug("NIP05 address verify for $name@$host")
         val accounts = identifierService.findAllIngressByIdentifierAndDomain(name, host)
-        logger.info("Found ${accounts.size} accounts")
+        logger.debug("Found ${accounts.size} accounts")
         return mapOf(
             "names" to accounts.associate {
                 it.identifier to it.pubkey
