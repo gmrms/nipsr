@@ -11,6 +11,7 @@ import javax.ws.rs.QueryParam
 import javax.ws.rs.core.Context
 import javax.ws.rs.core.HttpHeaders
 import javax.ws.rs.core.MediaType
+import org.slf4j.LoggerFactory
 
 @NIP_05
 @Path("/")
@@ -19,6 +20,8 @@ class NIP05Controller(
     private val identifierService: IdentifierService
 ) {
 
+    private val logger = LoggerFactory.getLogger(this::class.java)
+
     @GET
     @Path("/.well-known/nostr.json")
     @Produces(MediaType.APPLICATION_JSON)
@@ -26,7 +29,10 @@ class NIP05Controller(
         @QueryParam("name") name: String,
         @Context headers: HttpHeaders
     ) : Map<String, Map<String, String>> {
-        val accounts = identifierService.findAllIngressByIdentifierAndDomain(name, headers.getHeaderString("Host"))
+        val host = headers.getHeaderString("Host")
+        logger.info("NIP05 address verify for $name@$host")
+        val accounts = identifierService.findAllIngressByIdentifierAndDomain(name, host)
+        logger.info("Found ${accounts.size} accounts")
         return mapOf(
             "names" to accounts.associate {
                 it.identifier to it.pubkey
