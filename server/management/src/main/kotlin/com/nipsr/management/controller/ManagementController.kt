@@ -11,7 +11,7 @@ import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
 
-@Path("/identifier")
+@Path("/admin/identifier")
 @RolesAllowed("admin")
 @ApplicationScoped
 class ManagementController(
