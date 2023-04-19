@@ -6,16 +6,18 @@ import com.nipsr.management.model.Invoice
 import com.nipsr.management.service.IdentifierService
 import java.util.*
 import javax.enterprise.context.ApplicationScoped
+import javax.ws.rs.Consumes
 import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.PathParam
-import javax.ws.rs.core.Context
-import javax.ws.rs.core.HttpHeaders
-import javax.ws.rs.core.UriInfo
+import javax.ws.rs.Produces
+import javax.ws.rs.core.MediaType
 
 @ApplicationScoped
 @Path("/identifier")
+@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
 class IdentifierController(
     private val identifierService: IdentifierService,
     private val nip05Config: NIP05Config
