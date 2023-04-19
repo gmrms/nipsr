@@ -79,7 +79,6 @@
 
 <div id="registration" class="page">
     <h2>Registration</h2>
-    <p>Registering also grants you access to our private relay at <span>wss://private.nipsr.com</span></p>
     <form on:submit|preventDefault={onSubmit}>
         <div>
             <input name="identifier" type="text" placeholder="you" minlength="2" bind:value={identifierRequest.identifier} on:change={calculatePricing}/>
